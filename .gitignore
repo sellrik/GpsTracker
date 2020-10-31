@@ -3,3 +3,9 @@
 ################################################################################
 
 /GpsTracker/.vs/GpsTracker/v16/.suo
+/GpsTracker/GpsTracker/bin/Debug
+/GpsTracker/GpsTracker/obj/Debug/90
+/GpsTracker/GpsTracker/obj/.cache
+/GpsTracker/GpsTracker/obj
+/GpsTracker/GpsTracker/GpsTracker.csproj.user
+/GpsTracker/GpsTracker/bin/Release
