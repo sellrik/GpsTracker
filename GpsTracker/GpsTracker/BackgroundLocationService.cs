@@ -177,16 +177,19 @@ namespace GpsTracker
 
                 _locationUploaderService.UploadLocations();
 
-                try
+                Task.Run(() =>
                 {
-                    Thread.Sleep(2000);// TODO
-                    _telegramClient.SendLocation(location.Latitude, location.Longitude);
-                }
-                catch (Exception ex)
-                {
+                    try
+                    {
+                        Thread.Sleep(2000);// TODO
+                        _telegramClient.SendLocation(location.Latitude, location.Longitude);
+                    }
+                    catch (Exception ex)
+                    {
 
-                    throw;
-                }
+                        throw;
+                    }
+                });
             }
 
             public void OnProviderDisabled(string provider)
