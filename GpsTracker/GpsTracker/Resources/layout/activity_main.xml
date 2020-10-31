@@ -1,0 +1,36 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relativeLayout3">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relativeLayout1"
+        android:padding="5dp"
+        android:layout_below="@id/toolbar">
+
+        <Button
+            android:text="START"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/buttonStartStop" />
+        <TextView
+            android:text=""
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewLastUpdate"
+            android:layout_below="@+id/buttonStartStop"
+            android:textAlignment="center" />
+    </RelativeLayout>
+</RelativeLayout>

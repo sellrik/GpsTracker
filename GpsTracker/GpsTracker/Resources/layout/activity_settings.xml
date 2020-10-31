@@ -1,0 +1,82 @@
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relativeLayoutExport">
+
+    <include
+        android:id="@+id/toolbarExport"
+        layout="@layout/toolbar"/>
+
+    <RelativeLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relativeLayoutExport"
+        android:padding="5dp"
+        android:layout_below="@id/toolbarExport">
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/spinnerMinTime"
+            android:padding="5dp"/>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/spinnerMinDistance"
+            android:layout_below="@+id/spinnerMinTime"
+            android:padding="5dp"/>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/checkBoxIsUploadEnabled"
+            android:layout_below="@+id/spinnerMinDistance"
+            android:padding="5dp"
+            android:text="Enable location upload"/>
+        <!--
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/editTextUploadUrl"
+            android:layout_below="@+id/checkBoxIsUploadEnabled"
+            android:padding="5dp"
+            android:inputType="text"
+            android:hint="Upload url"/>
+        -->
+
+        <!--android:entries="@array/minDistance_array"/-->
+
+         <EditText
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/editTextTelegramBotToken"
+            android:layout_below="@+id/checkBoxIsUploadEnabled"
+            android:padding="5dp"
+            android:inputType="text"
+            android:hint="Telegram bot token"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/editTextTelegramChatId"
+            android:layout_below="@+id/editTextTelegramBotToken"
+            android:padding="5dp"
+            android:inputType="text"
+            android:hint="Telegram chat id"/>
+
+        <Button
+            android:text="SAVE"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/buttonSave"
+            android:layout_below="@+id/editTextTelegramChatId"
+            android:padding="5dp"/>
+    </RelativeLayout>
+</RelativeLayout>

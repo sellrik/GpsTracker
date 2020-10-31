@@ -1,0 +1,3 @@
+"C:\Program Files (x86)\Android\android-sdk\emulator\emulator.exe" -list-avds
+ 
+"C:\Program Files (x86)\Android\android-sdk\emulator\emulator.exe" -avd pixel_2_pie_9_0_-_api_28 -dns-server 8.8.8.8

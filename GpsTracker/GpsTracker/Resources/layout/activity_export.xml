@@ -1,0 +1,47 @@
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="25px"
+    android:minHeight="25px"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/relativeLayoutExport">
+
+    <include
+        android:id="@+id/toolbarExport"
+        layout="@layout/toolbar"/>
+
+    <RelativeLayout
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relativeLayoutExport"
+        android:padding="5dp"
+        android:layout_below="@id/toolbarExport">
+
+        <EditText
+            android:inputType="date"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/textDateFrom"
+            android:hint="From"
+            android:clickable="true"/>
+
+        <EditText
+            android:inputType="date"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/textDateTo"
+            android:layout_below="@+id/textDateFrom"
+            android:hint="To"
+            android:clickable="true"/>
+
+        <Button
+            android:text="EXPORT"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:id="@+id/buttonExport"
+            android:layout_below="@+id/textDateTo"/>
+    </RelativeLayout>
+</RelativeLayout>

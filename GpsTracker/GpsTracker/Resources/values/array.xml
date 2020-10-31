@@ -1,0 +1,22 @@
+<resources>
+    <string-array name="minTime_array">
+      <item>1 sec</item>
+      <item>5 sec</item>
+      <item>10 sec</item>
+      <item>30 sec</item>
+      <item>1 min</item>
+      <item>5 min</item>
+      <item>10 min</item>
+      <item>30 min</item>
+    </string-array>
+    <string-array name="minDistance_array">
+      <item>1 m</item>
+      <item>5 m</item>
+      <item>10 m</item>
+      <item>20 m</item>
+      <item>50 m</item>
+      <item>100 m</item>
+      <item>500 m</item>
+      <item>1 km</item>
+    </string-array>
+</resources>

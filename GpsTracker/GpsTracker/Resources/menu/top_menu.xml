@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<!--  <item
+       android:id="@+id/menu_edit"
+       android:icon="@mipmap/ic_action_content_create"
+       android:showAsAction="ifRoom"
+       android:title="Edit" />
+  <item
+       android:id="@+id/menu_save"
+       android:icon="@mipmap/ic_action_content_save"
+       android:showAsAction="ifRoom"
+       android:title="Save" />-->
+  <item
+       android:id="@+id/menu_export"
+       android:showAsAction="never"
+       android:title="Export" />
+  <item
+       android:id="@+id/menu_settings"
+       android:showAsAction="never"
+       android:title="Settings" />
+</menu>
