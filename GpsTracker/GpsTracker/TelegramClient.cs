@@ -18,11 +18,8 @@ namespace GpsTracker
     public class TelegramClient
     {
         private readonly HttpClient client = new HttpClient();
-        //private readonly string token = "1111459003:AAFLwhppxSNEAbhHQoMTjncAbv7k2624ce4";
         private readonly string baseUrl = "https://api.telegram.org/bot";
         private readonly string baseUrlWithToken;
-
-        //private readonly string channelId = "-1001204414229";
 
         private readonly SettingsModel settings;
 
