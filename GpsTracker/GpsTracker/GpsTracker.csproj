@@ -75,7 +75,7 @@
     <Compile Include="Database\Entity\SettingEntity.cs" />
     <Compile Include="Database\Entity\SettingTypeEnum.cs" />
     <Compile Include="DependencyInjection.cs" />
-    <Compile Include="ExportACtivity.cs" />
+    <Compile Include="ExportActivity.cs" />
     <Compile Include="LocationService.cs" />
     <Compile Include="LocationUploaderService.cs" />
     <Compile Include="MainActivity.cs" />

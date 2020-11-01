@@ -41,6 +41,9 @@ namespace GpsTracker
 
         public List<LocationEntity> QueryLocation(DateTime from, DateTime to)
         {
+            from = from.Date;
+            to = to.Date.AddDays(1).AddSeconds(-1);
+
             return _databaseService.Query<LocationEntity>()
                 .Where(i => i.DateTime >= from && i.DateTime <= to)
                 .ToList();

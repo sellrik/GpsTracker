@@ -103,7 +103,7 @@ namespace GpsTracker
         private void Start()
         {
             var settings = _settingsService.GetSettings();
-            LocationManager.RequestLocationUpdates(LocationManager.GpsProvider, settings.MinTime, settings.MinDistance, _backgroundLocationListener);
+            LocationManager.RequestLocationUpdates(LocationManager.GpsProvider, settings.MinTime * 1000, settings.MinDistance, _backgroundLocationListener);
             IsStarted = true;
         }
 
@@ -181,7 +181,6 @@ namespace GpsTracker
                 {
                     try
                     {
-                        Thread.Sleep(2000);// TODO
                         _telegramClient.SendLocation(location.Latitude, location.Longitude);
                     }
                     catch (Exception ex)
