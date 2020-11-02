@@ -37,5 +37,7 @@ namespace GpsTracker.Database
         public string SmtpPassword { get; set; }
 
         public string EmailRecipient { get; set; }
+
+        public int EmailSendingInterval { get; set; }
     }
 }

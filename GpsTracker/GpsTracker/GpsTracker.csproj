@@ -75,10 +75,12 @@
     <Compile Include="Database\Entity\SettingEntity.cs" />
     <Compile Include="Database\Entity\SettingTypeEnum.cs" />
     <Compile Include="DependencyInjection.cs" />
+    <Compile Include="EmailClient.cs" />
     <Compile Include="ExportActivity.cs" />
     <Compile Include="LocationService.cs" />
     <Compile Include="LocationUploaderService.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Models\LocationJsonModel.cs" />
     <Compile Include="Models\LocationUploadModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="SettingsActivity.cs" />
     <Compile Include="SettingsService.cs" />
     <Compile Include="TelegramClient.cs" />
+    <Compile Include="UploaderWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -133,6 +136,9 @@
     </PackageReference>
     <PackageReference Include="Unity">
       <Version>5.11.7</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Android.Arch.Work.Runtime">
+      <Version>1.0.0.3</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.Core.Utils" Version="28.0.0.3" />

@@ -32,6 +32,7 @@ namespace GpsTracker
         private EditText _editTextSmtpUsername;
         private EditText _editTextSmtpPassword;
         private EditText _editTextEmailRecipient;
+        private EditText _editTextEmailSendingInterval;
 
         private SettingsService _settingsService;
 
@@ -98,6 +99,7 @@ namespace GpsTracker
             _editTextSmtpUsername = FindViewById<EditText>(Resource.Id.editTextSmtpUsername);
             _editTextSmtpPassword = FindViewById<EditText>(Resource.Id.editTextSmtpPassword);
             _editTextEmailRecipient = FindViewById<EditText>(Resource.Id.editTextSmtpRecipient);
+            _editTextEmailSendingInterval = FindViewById<EditText>(Resource.Id.editTextEmailSendingInterval);
 
             LoadSettings();
 
@@ -133,7 +135,8 @@ namespace GpsTracker
                 SmtpHost = _editTextSmtpHost.Text,
                 SmtpUsername = _editTextSmtpUsername.Text,
                 SmtpPassword = _editTextSmtpPassword.Text,
-                EmailRecipient = _editTextEmailRecipient.Text
+                EmailRecipient = _editTextEmailRecipient.Text,
+                EmailSendingInterval = int.Parse(_editTextEmailSendingInterval.Text)
             };
 
             _settingsService.SaveSettings(settings);
@@ -161,6 +164,7 @@ namespace GpsTracker
             _editTextSmtpUsername.Text = settings.SmtpUsername;
             _editTextSmtpPassword.Text = settings.SmtpPassword;
             _editTextEmailRecipient.Text = settings.EmailRecipient;
+            _editTextEmailSendingInterval.Text = settings.EmailSendingInterval.ToString();
         }
     }
 }

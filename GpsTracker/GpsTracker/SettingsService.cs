@@ -42,7 +42,8 @@ namespace GpsTracker
                 SmtpHost = GetStringValue(SettingTypeEnum.SmtpHost),
                 SmtpUsername = GetStringValue(SettingTypeEnum.SmtpUsername),
                 SmtpPassword = GetStringValue(SettingTypeEnum.SmtpPassword),
-                EmailRecipient = GetStringValue(SettingTypeEnum.EmailRecipient)
+                EmailRecipient = GetStringValue(SettingTypeEnum.EmailRecipient),
+                EmailSendingInterval = GetIntValue(SettingTypeEnum.EmailSendingInterval)
             };
 
             int GetIntValue(SettingTypeEnum settingType)
@@ -84,6 +85,7 @@ namespace GpsTracker
             SaveSetting(SettingTypeEnum.SmtpUsername, settings.SmtpUsername);
             SaveSetting(SettingTypeEnum.SmtpPassword, settings.SmtpPassword);
             SaveSetting(SettingTypeEnum.EmailRecipient, settings.EmailRecipient);
+            SaveSetting(SettingTypeEnum.EmailSendingInterval, settings.EmailSendingInterval);
 
             void SaveSetting<T>(SettingTypeEnum typeEnum, T value)
             {
@@ -136,6 +138,8 @@ namespace GpsTracker
                     return "587";
                 case SettingTypeEnum.SmtpHost:
                     return "smtp.gmail.com";
+                case SettingTypeEnum.EmailSendingInterval:
+                    return "30";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(settingType));
             }

@@ -204,13 +204,29 @@
                 android:inputType="text"
                 android:hint=""/>
 
+            <TextView
+                android:text="Email sending interval (minutes)"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewEmailSendingInterval"
+                android:layout_below="@+id/editTextSmtpRecipient"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextEmailSendingInterval"
+                android:layout_below="@+id/textViewEmailSendingInterval"
+                android:padding="5dp"
+                android:inputType="number"
+                android:hint=""/>
 
             <Button
                 android:text="SAVE"
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
                 android:id="@+id/buttonSave"
-                android:layout_below="@+id/editTextSmtpRecipient"
+                android:layout_below="@+id/editTextEmailSendingInterval"
                 android:padding="5dp"/>
         </RelativeLayout>
     </ScrollView>

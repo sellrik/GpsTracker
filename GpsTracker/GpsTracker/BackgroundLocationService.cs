@@ -14,6 +14,7 @@ using Android.Support.V4.Content;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Work;
 using GpsTracker.Database;
 using Unity;
 
@@ -104,6 +105,18 @@ namespace GpsTracker
         {
             var settings = _settingsService.GetSettings();
             LocationManager.RequestLocationUpdates(LocationManager.GpsProvider, settings.MinTime * 1000, settings.MinDistance, _backgroundLocationListener);
+
+            if (settings.IsEmailSendingEnabled)
+            {
+                var request = PeriodicWorkRequest
+                    .Builder
+                    .From<UploaderWorker>(TimeSpan.FromMinutes(settings.EmailSendingInterval))
+                    .SetBackoffCriteria(BackoffPolicy.Linear, TimeSpan.FromMinutes(5))
+                    .Build();
+
+                WorkManager.Instance.EnqueueUniquePeriodicWork("GpsTrackerUploaderWorker", ExistingPeriodicWorkPolicy.Replace, request);
+            }
+
             IsStarted = true;
         }
 
@@ -112,6 +125,8 @@ namespace GpsTracker
             LocationManager.RemoveUpdates(_backgroundLocationListener);
             StopForeground(true);
             IsStarted = false;
+
+            WorkManager.Instance.CancelAllWork();
 
             var notificationManager = NotificationManagerCompat.From(Application.Context);
             notificationManager.CancelAll();
