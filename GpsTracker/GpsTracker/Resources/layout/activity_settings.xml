@@ -10,73 +10,208 @@
     <include
         android:id="@+id/toolbarExport"
         layout="@layout/toolbar"/>
-
-    <RelativeLayout
+    <ScrollView
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/relativeLayoutExport"
-        android:padding="5dp"
+        android:id="@+id/scrollView1"
         android:layout_below="@id/toolbarExport">
 
-        <Spinner
+        <RelativeLayout
+            android:minWidth="25px"
+            android:minHeight="25px"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:id="@+id/spinnerMinTime"
-            android:padding="5dp"/>
-
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:id="@+id/spinnerMinDistance"
-            android:layout_below="@+id/spinnerMinTime"
-            android:padding="5dp"/>
-
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:id="@+id/checkBoxIsUploadEnabled"
-            android:layout_below="@+id/spinnerMinDistance"
+            android:layout_height="match_parent"
+            android:id="@+id/relativeLayoutExport"
             android:padding="5dp"
-            android:text="Enable location upload"/>
-        <!--
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <TextView
+                android:text="Minimum time"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewMinTime" />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/spinnerMinTime"
+                android:padding="5dp"
+                android:layout_below="@+id/textViewMinTime"/>
+
+            <TextView
+                android:text="Minimum distance"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewMinDistance"
+                android:layout_below="@+id/spinnerMinTime"/>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/spinnerMinDistance"
+                android:layout_below="@+id/textViewMinDistance"
+                android:padding="5dp"/>
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/checkBoxIsTelegramUploadEnabled"
+                android:layout_below="@+id/spinnerMinDistance"
+                android:padding="5dp"
+                android:text="Enable Telegram location upload"/>
+            <!--
         <EditText
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:id="@+id/editTextUploadUrl"
-            android:layout_below="@+id/checkBoxIsUploadEnabled"
+            android:layout_below="@+id/checkBoxIsTelegramUploadEnabled"
             android:padding="5dp"
             android:inputType="text"
             android:hint="Upload url"/>
         -->
 
-        <!--android:entries="@array/minDistance_array"/-->
+            <!--android:entries="@array/minDistance_array"/-->
 
-         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:id="@+id/editTextTelegramBotToken"
-            android:layout_below="@+id/checkBoxIsUploadEnabled"
-            android:padding="5dp"
-            android:inputType="text"
-            android:hint="Telegram bot token"/>
+            <TextView
+                android:text="Telegram bot token"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewTelegramBotToken"
+                android:layout_below="@+id/checkBoxIsTelegramUploadEnabled"/>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:id="@+id/editTextTelegramChatId"
-            android:layout_below="@+id/editTextTelegramBotToken"
-            android:padding="5dp"
-            android:inputType="text"
-            android:hint="Telegram chat id"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextTelegramBotToken"
+                android:layout_below="@+id/textViewTelegramBotToken"
+                android:padding="5dp"
+                android:inputType="text"
+                android:hint=""/>
 
-        <Button
-            android:text="SAVE"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:id="@+id/buttonSave"
-            android:layout_below="@+id/editTextTelegramChatId"
-            android:padding="5dp"/>
-    </RelativeLayout>
+            <TextView
+                android:text="Telegram chat id"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewTelegramChatId"
+                android:layout_below="@+id/editTextTelegramBotToken"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextTelegramChatId"
+                android:layout_below="@+id/textViewTelegramChatId"
+                android:padding="5dp"
+                android:inputType="text"
+                android:hint=""/>
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/checkBoxIsEmailSendingEnabled"
+                android:layout_below="@+id/editTextTelegramChatId"
+                android:padding="5dp"
+                android:text="Enable email sending"/>
+
+            <TextView
+                android:text="SMTP port"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewSmtpPort"
+                android:layout_below="@+id/checkBoxIsEmailSendingEnabled"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextSmtpPort"
+                android:layout_below="@+id/textViewSmtpPort"
+                android:padding="5dp"
+                android:inputType="number"
+                android:hint=""/>
+
+            <TextView
+                android:text="SMTP host"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewSmtpHost"
+                android:layout_below="@+id/editTextSmtpPort"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextSmtpHost"
+                android:layout_below="@+id/textViewSmtpHost"
+                android:padding="5dp"
+                android:inputType="text"
+                android:hint=""/>
+
+            <TextView
+                android:text="SMTP username"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewSmtpUsername"
+                android:layout_below="@+id/editTextSmtpHost"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextSmtpUsername"
+                android:layout_below="@+id/textViewSmtpUsername"
+                android:padding="5dp"
+                android:inputType="text"
+                android:hint=""/>
+
+            <TextView
+                android:text="SMTP password"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewSmtpPassword"
+                android:layout_below="@+id/editTextSmtpUsername"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextSmtpPassword"
+                android:layout_below="@+id/textViewSmtpPassword"
+                android:padding="5dp"
+                android:inputType="textPassword"
+                android:hint=""/>
+
+            <TextView
+                android:text="Email recipient"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewSmtpRecipient"
+                android:layout_below="@+id/editTextSmtpPassword"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextSmtpRecipient"
+                android:layout_below="@+id/textViewSmtpRecipient"
+                android:padding="5dp"
+                android:inputType="text"
+                android:hint=""/>
+
+
+            <Button
+                android:text="SAVE"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:id="@+id/buttonSave"
+                android:layout_below="@+id/editTextSmtpRecipient"
+                android:padding="5dp"/>
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

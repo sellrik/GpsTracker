@@ -16,9 +16,15 @@ namespace GpsTracker.Database
     {
         MinTime = 1,
         MinDistance = 2,
-        IsUploadEnabled = 3,
+        IsTelegramUploadEnabled = 3,
         UploadUrl = 4,
         TelegramBotToken = 5,
-        TelegramChatId = 6
+        TelegramChatId = 6,
+        IsEmailSendingEnabled = 7,
+        SmtpPort = 8,
+        SmtpHost = 9,
+        SmtpUsername = 10,
+        SmtpPassword = 11,
+        EmailRecipient = 12
     }
 }

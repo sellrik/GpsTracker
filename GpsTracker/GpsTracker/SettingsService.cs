@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using GpsTracker.Database;
 using Unity;
+using Unity.Injection;
 
 namespace GpsTracker
 {
@@ -28,29 +29,36 @@ namespace GpsTracker
 
         public SettingsModel GetSettings()
         {
-            var minTimeSetting = GetSetting(SettingTypeEnum.MinTime);
-            var minDistanceSetting = GetSetting(SettingTypeEnum.MinDistance);
-            var isUploadEnabledSetting = GetSetting(SettingTypeEnum.IsUploadEnabled);
-            var uploadUrlSetting = GetSetting(SettingTypeEnum.UploadUrl);
-            var telegramBotTokenSetting = GetSetting(SettingTypeEnum.TelegramBotToken);
-            var telegramChatIdSetting = GetSetting(SettingTypeEnum.TelegramChatId);
-
-            var mintTime = int.Parse(minTimeSetting.Value);
-            var minDistance = int.Parse(minDistanceSetting.Value);
-            var uploadUrl = uploadUrlSetting.Value;
-            var isUploadEnabled = bool.Parse(isUploadEnabledSetting.Value);
-            var telegramBotToken = telegramBotTokenSetting.Value;
-            var telegramChatId = telegramChatIdSetting.Value;
-
             return new SettingsModel
             {
-                MinTime = mintTime,
-                MinDistance = minDistance,
-                IsUploadEnabled = isUploadEnabled,
-                UploadUrl = uploadUrl,
-                TelegramBotToken = telegramBotToken,
-                TelegramChatId = telegramChatId
+                MinTime = GetIntValue(SettingTypeEnum.MinTime),
+                MinDistance = GetIntValue(SettingTypeEnum.MinDistance),
+                IsTelegramUploadEnabled = GetBoolValue(SettingTypeEnum.IsTelegramUploadEnabled),
+                UploadUrl = GetStringValue(SettingTypeEnum.UploadUrl),
+                TelegramBotToken = GetStringValue(SettingTypeEnum.TelegramBotToken),
+                TelegramChatId = GetStringValue(SettingTypeEnum.TelegramChatId),
+                IsEmailSendingEnabled = GetBoolValue(SettingTypeEnum.IsEmailSendingEnabled),
+                SmtpPort = GetIntValue(SettingTypeEnum.SmtpPort),
+                SmtpHost = GetStringValue(SettingTypeEnum.SmtpHost),
+                SmtpUsername = GetStringValue(SettingTypeEnum.SmtpUsername),
+                SmtpPassword = GetStringValue(SettingTypeEnum.SmtpPassword),
+                EmailRecipient = GetStringValue(SettingTypeEnum.EmailRecipient)
             };
+
+            int GetIntValue(SettingTypeEnum settingType)
+            {
+                return int.Parse(GetSetting(settingType).Value);
+            }
+
+            bool GetBoolValue(SettingTypeEnum settingType)
+            {
+                return bool.Parse(GetSetting(settingType).Value);
+            }
+
+            string GetStringValue(SettingTypeEnum settingType)
+            {
+                return GetSetting(settingType).Value;
+            }
         }
 
         public void SaveSettings(SettingsModel settings)
@@ -65,53 +73,28 @@ namespace GpsTracker
                 throw new ArgumentOutOfRangeException(nameof(settings.MinDistance));
             }
 
-            var minTimeSetting = new SettingEntity
+            SaveSetting(SettingTypeEnum.MinTime, settings.MinTime);
+            SaveSetting(SettingTypeEnum.MinDistance, settings.MinDistance);
+            SaveSetting(SettingTypeEnum.IsTelegramUploadEnabled, settings.IsTelegramUploadEnabled);
+            SaveSetting(SettingTypeEnum.TelegramBotToken, settings.TelegramBotToken);
+            SaveSetting(SettingTypeEnum.TelegramChatId, settings.TelegramChatId);
+            SaveSetting(SettingTypeEnum.IsEmailSendingEnabled, settings.IsEmailSendingEnabled);
+            SaveSetting(SettingTypeEnum.SmtpPort, settings.SmtpPort);
+            SaveSetting(SettingTypeEnum.SmtpHost, settings.SmtpHost);
+            SaveSetting(SettingTypeEnum.SmtpUsername, settings.SmtpUsername);
+            SaveSetting(SettingTypeEnum.SmtpPassword, settings.SmtpPassword);
+            SaveSetting(SettingTypeEnum.EmailRecipient, settings.EmailRecipient);
+
+            void SaveSetting<T>(SettingTypeEnum typeEnum, T value)
             {
-                Setting = SettingTypeEnum.MinTime,
-                Value = settings.MinTime.ToString()
-            };
+                var entity = new SettingEntity
+                {
+                    Setting = typeEnum,
+                    Value = value.ToString()
+                };
 
-            _databaseService.Update(minTimeSetting);
-
-            var minDistanceSetting = new SettingEntity
-            {
-                Setting = SettingTypeEnum.MinDistance,
-                Value = settings.MinDistance.ToString()
-            };
-
-            _databaseService.Update(minDistanceSetting);
-
-            var isUploadEnabledSetting = new SettingEntity
-            {
-                Setting = SettingTypeEnum.IsUploadEnabled,
-                Value = settings.IsUploadEnabled.ToString()
-            };
-
-            _databaseService.Update(isUploadEnabledSetting);
-
-            //var uploadUrlSetting = new SettingEntity
-            //{
-            //    Setting = SettingTypeEnum.UploadUrl,
-            //    Value = settings.UploadUrl
-            //};
-
-            //_databaseService.Update(uploadUrlSetting);
-
-            var telegramBotTokenSetting = new SettingEntity
-            {
-                Setting = SettingTypeEnum.TelegramBotToken,
-                Value = settings.TelegramBotToken
-            };
-
-            _databaseService.Update(telegramBotTokenSetting);
-
-            var telegramChatIdSetting = new SettingEntity
-            {
-                Setting = SettingTypeEnum.TelegramChatId,
-                Value = settings.TelegramChatId
-            };
-
-            _databaseService.Update(telegramChatIdSetting);
+                _databaseService.Update(entity);
+            }
         }
 
         private SettingEntity GetSetting(SettingTypeEnum settingType)
@@ -139,12 +122,20 @@ namespace GpsTracker
                     return DefaultMinTime.ToString();
                 case SettingTypeEnum.MinDistance:
                     return DefaultMinDistance.ToString();
-                case SettingTypeEnum.IsUploadEnabled:
+                case SettingTypeEnum.IsTelegramUploadEnabled:
+                case SettingTypeEnum.IsEmailSendingEnabled:
                     return false.ToString();
                 case SettingTypeEnum.UploadUrl:
                 case SettingTypeEnum.TelegramBotToken:
                 case SettingTypeEnum.TelegramChatId:
+                case SettingTypeEnum.SmtpUsername:
+                case SettingTypeEnum.SmtpPassword:
+                case SettingTypeEnum.EmailRecipient:
                     return string.Empty;
+                case SettingTypeEnum.SmtpPort:
+                    return "587";
+                case SettingTypeEnum.SmtpHost:
+                    return "smtp.gmail.com";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(settingType));
             }

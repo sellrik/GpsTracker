@@ -49,7 +49,7 @@ namespace GpsTracker
 
                     var settings = _settingsService.GetSettings();
 
-                    if (!settings.IsUploadEnabled)
+                    if (!settings.IsTelegramUploadEnabled)
                     {
                         return;
                     }

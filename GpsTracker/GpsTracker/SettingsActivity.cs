@@ -21,10 +21,17 @@ namespace GpsTracker
         private Button _buttonSave;
         private Spinner _spinnerMinTime;
         private Spinner _spinnerMinDistance;
-        private CheckBox _checkBoxIsUploadEnabled;
+        private CheckBox _checkBoxIsTelegramUploadEnabled;
         //private EditText _editTextUploadUrl;
         private EditText _editTextTelegramBotToken;
         private EditText _editTextTelegramChatId;
+
+        private CheckBox _checkBoxIsEmailSendingEnabled;
+        private EditText _editTextSmtpPort;
+        private EditText _editTextSmtpHost;
+        private EditText _editTextSmtpUsername;
+        private EditText _editTextSmtpPassword;
+        private EditText _editTextEmailRecipient;
 
         private SettingsService _settingsService;
 
@@ -79,11 +86,18 @@ namespace GpsTracker
             var spinnerMinDistanceAdapter = new ArrayAdapter<string>(this, Resource.Layout.support_simple_spinner_dropdown_item, _minDistanceMapping.Select(i => i.Value).ToArray());
             _spinnerMinDistance.Adapter = spinnerMinDistanceAdapter;
 
-            _checkBoxIsUploadEnabled = FindViewById<CheckBox>(Resource.Id.checkBoxIsUploadEnabled);
+            _checkBoxIsTelegramUploadEnabled = FindViewById<CheckBox>(Resource.Id.checkBoxIsTelegramUploadEnabled);
             //_editTextUploadUrl = FindViewById<EditText>(Resource.Id.editTextUploadUrl);
 
             _editTextTelegramBotToken = FindViewById<EditText>(Resource.Id.editTextTelegramBotToken);
             _editTextTelegramChatId = FindViewById<EditText>(Resource.Id.editTextTelegramChatId);
+
+            _checkBoxIsEmailSendingEnabled = FindViewById<CheckBox>(Resource.Id.checkBoxIsEmailSendingEnabled);
+            _editTextSmtpPort = FindViewById<EditText>(Resource.Id.editTextSmtpPort);
+            _editTextSmtpHost = FindViewById<EditText>(Resource.Id.editTextSmtpHost);
+            _editTextSmtpUsername = FindViewById<EditText>(Resource.Id.editTextSmtpUsername);
+            _editTextSmtpPassword = FindViewById<EditText>(Resource.Id.editTextSmtpPassword);
+            _editTextEmailRecipient = FindViewById<EditText>(Resource.Id.editTextSmtpRecipient);
 
             LoadSettings();
 
@@ -106,19 +120,20 @@ namespace GpsTracker
         {
             var minTime = _minTimeMapping.First(i => i.Value == _spinnerMinTime.SelectedItem.ToString());
             var minDistance = _minDistanceMapping.First(i => i.Value == _spinnerMinDistance.SelectedItem.ToString());
-            var isUploadEnabled = _checkBoxIsUploadEnabled.Checked;
-            var telegramBotToken = _editTextTelegramBotToken.Text;
-            var telegramChatId = _editTextTelegramChatId.Text;
-            //var uploadUrl = _editTextUploadUrl.Text;
 
             var settings = new SettingsModel
             {
                 MinTime = minTime.Key,
                 MinDistance = minDistance.Key,
-                IsUploadEnabled = isUploadEnabled,
-                TelegramBotToken = telegramBotToken,
-                TelegramChatId = telegramChatId
-                //UploadUrl = uploadUrl
+                IsTelegramUploadEnabled = _checkBoxIsTelegramUploadEnabled.Checked,
+                TelegramBotToken = _editTextTelegramBotToken.Text,
+                TelegramChatId = _editTextTelegramChatId.Text,
+                IsEmailSendingEnabled = _checkBoxIsEmailSendingEnabled.Checked,
+                SmtpPort = int.Parse(_editTextSmtpPort.Text),
+                SmtpHost = _editTextSmtpHost.Text,
+                SmtpUsername = _editTextSmtpUsername.Text,
+                SmtpPassword = _editTextSmtpPassword.Text,
+                EmailRecipient = _editTextEmailRecipient.Text
             };
 
             _settingsService.SaveSettings(settings);
@@ -134,11 +149,18 @@ namespace GpsTracker
             var minDistanceItem = _minDistanceMapping.First(i => i.Key == settings.MinDistance);
             _spinnerMinDistance.SetSelection(_minDistanceMapping.IndexOf(minDistanceItem));
 
-            _checkBoxIsUploadEnabled.Checked = settings.IsUploadEnabled;
+            _checkBoxIsTelegramUploadEnabled.Checked = settings.IsTelegramUploadEnabled;
             //_editTextUploadUrl.Text = settings.UploadUrl;
 
             _editTextTelegramBotToken.Text = settings.TelegramBotToken;
             _editTextTelegramChatId.Text = settings.TelegramChatId;
+
+            _checkBoxIsEmailSendingEnabled.Checked = settings.IsEmailSendingEnabled;
+            _editTextSmtpPort.Text = settings.SmtpPort.ToString();
+            _editTextSmtpHost.Text = settings.SmtpHost;
+            _editTextSmtpUsername.Text = settings.SmtpUsername;
+            _editTextSmtpPassword.Text = settings.SmtpPassword;
+            _editTextEmailRecipient.Text = settings.EmailRecipient;
         }
     }
 }
