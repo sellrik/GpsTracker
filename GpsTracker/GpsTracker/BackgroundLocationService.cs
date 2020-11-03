@@ -172,6 +172,7 @@ namespace GpsTracker
             private LocalBroadcastManager _localBroadcastManager;
             private LocationUploaderService _locationUploaderService;
             private LocationService _locationService;
+            private SettingsService _settingsService;
 
             private TelegramClient _telegramClient;
 
@@ -181,8 +182,9 @@ namespace GpsTracker
                 _locationUploaderService = DependencyInjection.Container.Resolve<LocationUploaderService>();
                 _locationService = new LocationService();
 
-                var settingsService = new SettingsService();
-                var settings = settingsService.GetSettings();
+                _settingsService = new SettingsService(); 
+
+                var settings = _settingsService.GetSettings();
                 _telegramClient = new TelegramClient(settings);
             }
 
@@ -191,6 +193,13 @@ namespace GpsTracker
                 _locationService.AddLocation(location);
 
                 _locationUploaderService.UploadLocations();
+
+                var settings = _settingsService.GetSettings();
+
+                if (!settings.IsTelegramUploadEnabled)
+                {
+                    return;
+                }
 
                 Task.Run(() =>
                 {
