@@ -20,7 +20,7 @@ using SQLite;
 
 namespace GpsTracker
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleInstance)]
     public class MainActivity : AppCompatActivity
     {
         private const int AccessFineLocationPermissionCode = 123;
@@ -34,7 +34,7 @@ namespace GpsTracker
         private CustomBroadcastReceiver _broadcastReceiver;
 
         private ListView _listViewLog;
-        private List<string> _listViewData = new List<string>();
+        private static List<string> _listViewData = new List<string>();
         //private ArrayAdapter _adapter;
         private CustomAdapter _adapter;
 
@@ -119,9 +119,15 @@ namespace GpsTracker
         {
             base.OnStop();
 
-            UnRegisterBroadcastReceiver();
+            //UnRegisterBroadcastReceiver();
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            UnRegisterBroadcastReceiver();
+            StopService();
+        }
 
         private void StartLocationService()
         {
