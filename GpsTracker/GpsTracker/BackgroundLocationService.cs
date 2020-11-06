@@ -190,6 +190,10 @@ namespace GpsTracker
 
             public void OnLocationChanged(Location location)
             {
+                var intent = new Intent("testAction");
+                intent.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - location set");
+                //_localBroadcastManager.SendBroadcast(intent);
+
                 _locationService.AddLocation(location);
 
                 _locationUploaderService.UploadLocations();
@@ -206,9 +210,16 @@ namespace GpsTracker
                     try
                     {
                         _telegramClient.SendLocation(location.Latitude, location.Longitude);
+
+                        var intentTelegram = new Intent("testAction");
+                        intentTelegram.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - location sent in Telegram");
+                        //_localBroadcastManager.SendBroadcast(intentTelegram);
                     }
                     catch (Exception ex)
                     {
+                        var intentTelegram = new Intent("testAction");
+                        intentTelegram.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - location sending in Telegram failed");
+                        _localBroadcastManager.SendBroadcast(intentTelegram);
 
                         throw;
                     }

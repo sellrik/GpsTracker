@@ -205,12 +205,29 @@
                 android:hint=""/>
 
             <TextView
+                android:text="Email subject"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewEmailSubject"
+                android:layout_below="@+id/editTextSmtpRecipient"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextEmailSubject"
+                android:layout_below="@+id/textViewEmailSubject"
+                android:padding="5dp"
+                android:inputType="text"
+                android:hint=""/>
+
+            <TextView
                 android:text="Email sending interval (minutes)"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textViewEmailSendingInterval"
-                android:layout_below="@+id/editTextSmtpRecipient"/>
+                android:layout_below="@+id/editTextEmailSubject"/>
 
             <EditText
                 android:layout_width="match_parent"

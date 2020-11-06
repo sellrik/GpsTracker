@@ -11,6 +11,7 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
+using Android.Support.V4.Content;
 using Android.Views;
 using Android.Widget;
 using AndroidX.Work;
@@ -26,11 +27,15 @@ namespace GpsTracker
 
         static bool IsRunning = false;
 
+        LocalBroadcastManager _localBroadcastManager;
+
         // TODO?
         public UploaderWorker(Context context, WorkerParameters workerParameters) : base(context, workerParameters)
         {
             _settingsService = new SettingsService();
             _locationService = new LocationService();
+
+            _localBroadcastManager = LocalBroadcastManager.GetInstance(context);
         }
 
         public override Result DoWork()
@@ -76,7 +81,7 @@ namespace GpsTracker
                     settings.SmtpPassword,
                     settings.SmtpUsername,
                     settings.EmailRecipient,
-                    "GPS tracker",
+                    settings.EmailSubject,
                     string.Empty,
                     attachment
                     );
@@ -89,10 +94,18 @@ namespace GpsTracker
 
                 _locationService.UpdateLocations(locations);
 
+                var intent = new Intent("testAction");
+                intent.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - email sent ({locations.Count} locations)");
+                _localBroadcastManager.SendBroadcast(intent);
+
                 return Result.InvokeSuccess();
             }
             catch (Exception ex)
             {
+                var intent = new Intent("testAction");
+                intent.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - email sending failed");
+                _localBroadcastManager.SendBroadcast(intent);
+
                 if (RunAttemptCount >= 3)
                 {
                     return Result.InvokeFailure();
