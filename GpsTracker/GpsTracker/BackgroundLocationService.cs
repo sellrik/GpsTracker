@@ -160,7 +160,7 @@ namespace GpsTracker
             var builder = new NotificationCompat.Builder(this, ChannelId);
 
             builder.SetContentTitle("GPS tracker");
-            builder.SetContentText("GPS tracker");
+            builder.SetContentText("GPS tracker is running");
             builder.SetContentIntent(pendingIntent);
             builder.SetSmallIcon(Resource.Mipmap.ic_launcher);
 

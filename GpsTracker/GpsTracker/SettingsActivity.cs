@@ -35,8 +35,9 @@ namespace GpsTracker
         private EditText _editTextEmailSendingInterval;
         private EditText _editTextEmailSubject;
 
-        private SettingsService _settingsService;
+        private EditText _editTextKeepLocationsForDays;
 
+        private SettingsService _settingsService;
 
         private List<KeyValuePair<int, string>> _minTimeMapping = new List<KeyValuePair<int, string>>
         {
@@ -103,6 +104,8 @@ namespace GpsTracker
             _editTextEmailSendingInterval = FindViewById<EditText>(Resource.Id.editTextEmailSendingInterval);
             _editTextEmailSubject = FindViewById<EditText>(Resource.Id.editTextEmailSubject);
 
+            _editTextKeepLocationsForDays = FindViewById<EditText>(Resource.Id.editTextKeepLocationsFor);
+
             LoadSettings();
 
             _buttonSave = FindViewById<Button>(Resource.Id.buttonSave);
@@ -117,7 +120,16 @@ namespace GpsTracker
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
-            SaveSettings();
+            try
+            {
+                SaveSettings();
+                Toast.MakeText(this, "Settings saved", ToastLength.Long).Show();
+            }
+            catch (Exception)
+            {
+                Toast.MakeText(this, "Failed to save settings", ToastLength.Long).Show();
+                throw;
+            }
         }
 
         private void SaveSettings()
@@ -139,7 +151,8 @@ namespace GpsTracker
                 SmtpPassword = _editTextSmtpPassword.Text,
                 EmailRecipient = _editTextEmailRecipient.Text,
                 EmailSendingInterval = int.Parse(_editTextEmailSendingInterval.Text),
-                EmailSubject = _editTextEmailSubject.Text
+                EmailSubject = _editTextEmailSubject.Text,
+                KeepLocationsForDays = int.Parse(_editTextKeepLocationsForDays.Text)
             };
 
             _settingsService.SaveSettings(settings);
@@ -169,6 +182,7 @@ namespace GpsTracker
             _editTextEmailRecipient.Text = settings.EmailRecipient;
             _editTextEmailSendingInterval.Text = settings.EmailSendingInterval.ToString();
             _editTextEmailSubject.Text = settings.EmailSubject;
+            _editTextKeepLocationsForDays.Text = settings.KeepLocationsForDays.ToString();
         }
     }
 }

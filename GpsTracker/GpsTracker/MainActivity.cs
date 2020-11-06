@@ -26,7 +26,6 @@ namespace GpsTracker
         private const int AccessFineLocationPermissionCode = 123;
         private bool _accessFineLocationPermissionGranted = false;
         private Button _startStopButton;
-        //private TextView _lastUpdateTextView;
 
         private string _startStopButtonStartedText = "STOP";
         private string _startStopButtonStoppedText = "START";
@@ -35,7 +34,6 @@ namespace GpsTracker
 
         private ListView _listViewLog;
         private static List<string> _listViewData = new List<string>();
-        //private ArrayAdapter _adapter;
         private CustomAdapter _adapter;
 
         private LocalBroadcastManager LocalBroadcastManager
@@ -60,11 +58,8 @@ namespace GpsTracker
 
             _startStopButton = FindViewById<Button>(Resource.Id.buttonStartStop);
             _startStopButton.Click += startStopButton_Click;
-            //_lastUpdateTextView = FindViewById<TextView>(Resource.Id.textViewLastUpdate);
-            //_lastUpdateTextView.Text = "";
 
             _listViewLog = FindViewById<ListView>(Resource.Id.listViewLog);
-            //_adapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleListItem1, _listViewData);
             var inflater = (LayoutInflater)GetSystemService(Context.LayoutInflaterService);
             _adapter = new CustomAdapter(inflater, _listViewData);
             _listViewLog.Adapter = _adapter;
@@ -96,8 +91,6 @@ namespace GpsTracker
             return base.OnOptionsItemSelected(item);
         }
 
-        // TODO: register/unregister receiver: onPause,OnResume, etc
-
         protected override void OnRestart()
         {
             base.OnRestart();
@@ -118,8 +111,6 @@ namespace GpsTracker
         protected override void OnStop()
         {
             base.OnStop();
-
-            //UnRegisterBroadcastReceiver();
         }
 
         protected override void OnDestroy()
@@ -233,28 +224,6 @@ namespace GpsTracker
             return false;
         }
 
-        private void LocationUpdated(Intent intent)
-        {
-            var date = DateTime.Parse(intent.GetStringExtra("Date"));
-            var location = intent.GetStringExtra("Location");
-            //_lastUpdateTextView.Text = $"Last location update: {date}";
-
-        }
-
-        private void LocationRequestStatusQueryResult(bool isStarted)
-        {
-            if (isStarted)
-            {
-                _startStopButton.Text = _startStopButtonStartedText;
-            }
-            else
-            {
-                _startStopButton.Text = _startStopButtonStoppedText;
-            }
-
-            _startStopButton.Enabled = true;
-        }
-
         private void RegisterBroadcastReceiver()
         {
             if (_broadcastReceiver == null)
@@ -285,14 +254,11 @@ namespace GpsTracker
                 _listViewData.Add(data);
                 _adapter.NotifyDataSetChanged();
 
-                //_adapter.Add(data);
-
                 lock (_lockObject)
                 {
                     if (_adapter.Count == 11)
                     {
                         _listViewData.RemoveAt(0);
-                        //_adapter.Remove(item);
                     }
                 }
             });

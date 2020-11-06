@@ -88,5 +88,28 @@ namespace GpsTracker.Database
                 return func();
             }
         }
+
+        private void Lock<T>(Action action)
+        {
+            lock (_lockObject)
+            {
+                action();
+            }
+        }
+
+        public void RemoveLocations(List<LocationEntity> entities)
+        {
+            Lock<LocationEntity>(() =>
+            {
+                if (!entities.Any())
+                {
+                    return;
+                }
+
+                var ids = string.Join(", ", entities.Select(i => i.Id));
+                var query = $"delete from LocationEntity where Id in ({ids})";
+                _connection.Execute(query);
+            });
+        }
     }
 }

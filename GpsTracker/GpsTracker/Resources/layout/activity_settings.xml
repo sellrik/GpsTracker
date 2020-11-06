@@ -238,12 +238,29 @@
                 android:inputType="number"
                 android:hint=""/>
 
+            <TextView
+                android:text="Keep location data for (days)"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewKeepLocationsFor"
+                android:layout_below="@+id/editTextEmailSendingInterval"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/editTextKeepLocationsFor"
+                android:layout_below="@+id/textViewKeepLocationsFor"
+                android:padding="5dp"
+                android:inputType="number"
+                android:hint=""/>
+
             <Button
                 android:text="SAVE"
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
                 android:id="@+id/buttonSave"
-                android:layout_below="@+id/editTextEmailSendingInterval"
+                android:layout_below="@+id/editTextKeepLocationsFor"
                 android:padding="5dp"/>
         </RelativeLayout>
     </ScrollView>

@@ -64,9 +64,9 @@ namespace GpsTracker
                     return Result.InvokeSuccess();
                 }
 
-                var locationsModel = locations.Select(i => new LocationJsonModel(i)).ToList();
+                var exporter = new Exporter();
 
-                var json = JsonConvert.SerializeObject(locationsModel);
+                var json = exporter.CreateJson(locations);
 
                 var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
 
@@ -95,8 +95,10 @@ namespace GpsTracker
                 _locationService.UpdateLocations(locations);
 
                 var intent = new Intent("testAction");
-                intent.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - email sent ({locations.Count} locations)");
+                intent.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - email sent: {locations.Count} location(s)");
                 _localBroadcastManager.SendBroadcast(intent);
+
+                _locationService.RemoveLocations(settings.KeepLocationsForDays);
 
                 return Result.InvokeSuccess();
             }

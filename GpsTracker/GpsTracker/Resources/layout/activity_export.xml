@@ -20,28 +20,59 @@
         android:padding="5dp"
         android:layout_below="@id/toolbarExport">
 
+        <TextView
+            android:text="From"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewFrom"
+/>
+
         <EditText
             android:inputType="date"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:id="@+id/textDateFrom"
-            android:hint="From"
-            android:clickable="true"/>
+            android:hint=""
+            android:clickable="true"
+            android:layout_below="@+id/textViewFrom"/>
+
+        <TextView
+            android:text="To"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewTo"
+            android:layout_below="@+id/textDateFrom"/>
 
         <EditText
             android:inputType="date"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:id="@+id/textDateTo"
-            android:layout_below="@+id/textDateFrom"
-            android:hint="To"
+            android:layout_below="@+id/textViewTo"
+            android:hint=""
             android:clickable="true"/>
+
+        <TextView
+            android:text="Format"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewFormat"
+            android:layout_below="@+id/textDateTo"/>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:id="@+id/spinnerFormat"
+            android:layout_below="@+id/textViewFormat"/>
 
         <Button
             android:text="EXPORT"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:id="@+id/buttonExport"
-            android:layout_below="@+id/textDateTo"/>
+            android:layout_below="@+id/spinnerFormat"/>
     </RelativeLayout>
 </RelativeLayout>

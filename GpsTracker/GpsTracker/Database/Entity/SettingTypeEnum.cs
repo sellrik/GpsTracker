@@ -27,6 +27,7 @@ namespace GpsTracker.Database
         SmtpPassword = 11,
         EmailRecipient = 12,
         EmailSendingInterval = 13,
-        EmailSubject = 14
+        EmailSubject = 14,
+        KeepLocationsForDays = 15
     }
 }

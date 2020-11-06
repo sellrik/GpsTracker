@@ -60,5 +60,16 @@ namespace GpsTracker
         {
             _databaseService.UpdateAll(locations);
         }
+
+        public void RemoveLocations(int days)
+        {
+            var to = DateTime.Now.AddDays(-days);
+
+            var locations = _databaseService.Query<LocationEntity>()
+                .Where(i => i.DateTime <= to)
+                .ToList();
+
+            _databaseService.RemoveLocations(locations);
+        }
     }
 }

@@ -41,5 +41,7 @@ namespace GpsTracker.Database
         public int EmailSendingInterval { get; set; }
 
         public string EmailSubject { get; set; }
+
+        public int KeepLocationsForDays { get; set; }
     }
 }

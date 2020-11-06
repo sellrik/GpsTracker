@@ -29,8 +29,15 @@ namespace GpsTracker
         private Button _exportButton;
         private EditText _textDateFrom;
         private EditText _textDateTo;
+        private Spinner _spinnerFormat;
         private EventHandler<DatePickerDialog.DateSetEventArgs> _setDateFromEventHandler;
         private EventHandler<DatePickerDialog.DateSetEventArgs> _setDateToEventHandler;
+
+        private List<string> _exportFormats = new List<string>
+        {
+            "gpx",
+            "json"
+        };
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -63,6 +70,10 @@ namespace GpsTracker
             _textDateTo.Enabled = true;
             _textDateTo.Clickable = true;
             _textDateTo.Focusable = false;
+
+            _spinnerFormat = FindViewById<Spinner>(Resource.Id.spinnerFormat);
+            var formatAdapter = new ArrayAdapter<string>(this, Resource.Layout.support_simple_spinner_dropdown_item, _exportFormats);
+            _spinnerFormat.Adapter = formatAdapter;
         }
 
         private void textDateTo_Click(object sender, EventArgs e)
@@ -128,9 +139,15 @@ namespace GpsTracker
                 try
                 {
                     _exportButton.Clickable = false;
-                    var path = Path.Combine(GetExternalFilesDir(null).Path, $"file-{DateTime.Now.Ticks}.gpx");
-                    var gpxContent = CreateGpx(fromDate, toDate);
-                    File.WriteAllText(path, gpxContent);
+
+                    var format = _spinnerFormat.SelectedItem.ToString();
+
+                    var path = Path.Combine(GetExternalFilesDir(null).Path, $"file-{DateTime.Now.Ticks}.{format}");
+
+                    var content = CreateContent(format);
+
+                    File.WriteAllText(path, content);
+
                     Toast.MakeText(this, $@"File exported to: {path}", ToastLength.Short).Show();
                 }
                 catch (Exception ex)
@@ -146,50 +163,27 @@ namespace GpsTracker
             {
                 Toast.MakeText(this, "External storage is not available", ToastLength.Short).Show();
             }
+
+            string CreateContent(string format)
+            {
+                var exporter = new Exporter();
+
+                switch (format)
+                {
+                    case "gpx":
+                        return exporter.CreateGpx(fromDate, toDate);
+                    case "json":
+                        return exporter.CreateJson(fromDate, toDate);
+                    default:
+                        return string.Empty;
+                }
+            }
         }
 
         public override bool OnSupportNavigateUp()
         {
             OnBackPressed();
             return true;
-        }
-
-        private string CreateGpx(DateTime from, DateTime to)
-        {
-            var locationServie = new LocationService();
-            var builder = new StringBuilder();
-
-            var locations = locationServie
-                .QueryLocation(from, to)
-                .OrderBy(i => i.Time)
-                .ToList();
-
-            builder.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            builder.AppendLine("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\" xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\" creator=\"GPS Tracker\" version=\"1.1\">");
-            
-                builder.AppendLine("<trk>");
-
-                    builder.AppendLine("<name>Recorded locations</name>");
-
-                    builder.AppendLine("<trkseg>");
-
-                        foreach (var location in locations)
-                        {
-                            builder.AppendLine($"<trkpt lat=\"{Math.Round(location.Latitude, 6, MidpointRounding.AwayFromZero)}\" lon=\"{Math.Round(location.Longitude, 6, MidpointRounding.AwayFromZero)}\">");
-
-                                builder.AppendLine($"<ele>{Math.Round(location.Altitude, 6, MidpointRounding.AwayFromZero)}</ele>");
-                                builder.AppendLine($"<time>{location.DateTime.ToString("yyyy-MM-ddTHH:mm:ssZ")}</time>");
-
-                            builder.AppendLine("</trkpt>");
-                        }
-
-                    builder.AppendLine("</trkseg>");
-
-                builder.AppendLine("</trk>");
-
-            builder.AppendLine("</gpx>");
-
-            return builder.ToString();
         }
     }
 }
