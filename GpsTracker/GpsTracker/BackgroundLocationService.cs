@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Locations;
+using Android.Net;
+using Android.Net.Wifi;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.V4.App;
@@ -52,7 +54,17 @@ namespace GpsTracker
             }
         }
 
+        private ConnectivityManager ConnectivityManager
+        {
+            get
+            {
+                return (ConnectivityManager)GetSystemService(ConnectivityService);
+            }
+        }
+
         private BackgroundLocationListener _backgroundLocationListener;
+
+        private CustomNetworkCallback _customNetworkCallback;
 
         public override void OnCreate()
         {
@@ -83,12 +95,23 @@ namespace GpsTracker
             base.OnTaskRemoved(rootIntent);
 
             Stop();
+
+            if (_customNetworkCallback != null)
+            {
+                ConnectivityManager.UnregisterNetworkCallback(_customNetworkCallback);
+            }
         }
 
         public override void OnDestroy()
         {
             base.OnDestroy();
+
             Stop();
+
+            if (_customNetworkCallback != null)
+            {
+                ConnectivityManager.UnregisterNetworkCallback(_customNetworkCallback);
+            }
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
@@ -104,14 +127,31 @@ namespace GpsTracker
         private void Start()
         {
             var settings = _settingsService.GetSettings();
-            LocationManager.RequestLocationUpdates(LocationManager.GpsProvider, settings.MinTime * 1000, settings.MinDistance, _backgroundLocationListener);
+
+            StartLocationUpdates();
+
+            if (settings.DisableTrackingOnWifi)
+            {
+                var builder = new NetworkRequest.Builder();
+                builder.AddTransportType(TransportType.Wifi);
+                var networkRequest = builder.Build();
+
+                _customNetworkCallback = new CustomNetworkCallback((WifiManager)GetSystemService(WifiService), StartLocationUpdates, StopLocationUpdates);
+                ConnectivityManager.RegisterNetworkCallback(networkRequest, _customNetworkCallback);
+            }
 
             if (settings.IsEmailSendingEnabled)
             {
+                var contstraints = new Constraints
+                    .Builder()
+                    .SetRequiredNetworkType(settings.UploadOnMobileNetwork ? NetworkType.Connected : NetworkType.Unmetered)
+                    .Build();
+
                 var request = PeriodicWorkRequest
                     .Builder
                     .From<UploaderWorker>(TimeSpan.FromMinutes(settings.EmailSendingInterval))
                     .SetBackoffCriteria(BackoffPolicy.Linear, TimeSpan.FromMinutes(5))
+                    .SetConstraints(contstraints)
                     .Build();
 
                 WorkManager.Instance.EnqueueUniquePeriodicWork("GpsTrackerUploaderWorker", ExistingPeriodicWorkPolicy.Replace, request);
@@ -122,7 +162,8 @@ namespace GpsTracker
 
         private void Stop()
         {
-            LocationManager.RemoveUpdates(_backgroundLocationListener);
+            StopLocationUpdates();
+
             StopForeground(true);
             IsStarted = false;
 
@@ -132,11 +173,27 @@ namespace GpsTracker
             notificationManager.CancelAll();
         }
 
+        private void StartLocationUpdates(SettingsModel settings)
+        {
+            LocationManager.RequestLocationUpdates(LocationManager.GpsProvider, settings.MinTime * 1000, settings.MinDistance, _backgroundLocationListener);
+        }
+
+        private void StartLocationUpdates()
+        {
+            var settings = _settingsService.GetSettings();
+            StartLocationUpdates(settings);
+        }
+
+        private void StopLocationUpdates()
+        {
+            LocationManager.RemoveUpdates(_backgroundLocationListener);
+        }
+
         private Notification CreateNotification()
         {
-            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
-                var notificationManager = (NotificationManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.NotificationService);
+                var notificationManager = (NotificationManager)Application.Context.GetSystemService(Context.NotificationService);
 
                 var name = "GPS tracker";
                 var description = "GPS tracker";
@@ -182,7 +239,7 @@ namespace GpsTracker
                 _locationUploaderService = DependencyInjection.Container.Resolve<LocationUploaderService>();
                 _locationService = new LocationService();
 
-                _settingsService = new SettingsService(); 
+                _settingsService = new SettingsService();
 
                 var settings = _settingsService.GetSettings();
                 _telegramClient = new TelegramClient(settings);
@@ -245,6 +302,40 @@ namespace GpsTracker
             {
                 Toast.MakeText(this, "GPS is disabled!", ToastLength.Long).Show();
             }
+        }
+    }
+
+    internal class CustomNetworkCallback : ConnectivityManager.NetworkCallback
+    {
+        WifiManager _wifiManager;
+        Action _startLocationUpdates;
+        Action _stopLocationUpdates;
+        NetworkLogService _networkLogService;
+
+        public CustomNetworkCallback(WifiManager wifiManager, Action startLocationUpdates, Action stopLocationUpdates)
+        {
+            _wifiManager = wifiManager;
+            _startLocationUpdates = startLocationUpdates;
+            _stopLocationUpdates = stopLocationUpdates;
+
+            _networkLogService = new NetworkLogService();
+        }
+
+        public override void OnAvailable(Network network)
+        {
+            base.OnAvailable(network);
+            //var info = _wifiManager.ConnectionInfo; TODO: permission
+            _stopLocationUpdates();
+
+            _networkLogService.Add(DateTime.Now, true);
+        }
+
+        public override void OnLost(Network network)
+        {
+            base.OnLost(network);
+            _startLocationUpdates();
+
+            _networkLogService.Add(DateTime.Now, false);
         }
     }
 }

@@ -28,6 +28,8 @@ namespace GpsTracker.Database
         EmailRecipient = 12,
         EmailSendingInterval = 13,
         EmailSubject = 14,
-        KeepLocationsForDays = 15
+        KeepLocationsForDays = 15,
+        UploadOnMobileNetwork = 16,
+        DisableTrackingOnWifi = 17
     }
 }

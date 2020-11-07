@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using GpsTracker.Database;
+using GpsTracker.Database.Entity;
 using GpsTracker.Models;
 using Newtonsoft.Json;
 
@@ -50,12 +51,16 @@ namespace GpsTracker
 
             return builder.ToString();
         }
-    
-        public string CreateJson(List<LocationEntity> locations)
-        {
-            var locationsModel = locations.Select(i => new LocationJsonModel(i)).ToList();
 
-            var json = JsonConvert.SerializeObject(locationsModel);
+        public string CreateJson(List<LocationEntity> locations, List<NetworkLogEntity> networkLogs)
+        {
+            var model = new JsonModel
+            {
+                Locations = locations.Select(i => new LocationJsonModel(i)).ToList(),
+                NetworkLogs = networkLogs.Select(i => new NetworkLogJsonModel(i)).ToList()
+            };
+
+            var json = JsonConvert.SerializeObject(model);
 
             return json;
         }
@@ -63,7 +68,9 @@ namespace GpsTracker
         public string CreateJson(DateTime from, DateTime to)
         {
             var locations = GetLocations(from, to);
-            return CreateJson(locations);
+            var networkLogs = GetNetworkLogs(from, to);
+
+            return CreateJson(locations, networkLogs);
         }
 
         private List<LocationEntity> GetLocations(DateTime from, DateTime to)
@@ -76,6 +83,18 @@ namespace GpsTracker
                 .ToList();
 
             return locations;
+        }
+
+        private List<NetworkLogEntity> GetNetworkLogs(DateTime from, DateTime to)
+        {
+            var service = new NetworkLogService();
+
+            var entities = service
+                .Query(from, to)
+                .OrderBy(i => i.DateTime)
+                .ToList();
+
+            return entities;
         }
     }
 }

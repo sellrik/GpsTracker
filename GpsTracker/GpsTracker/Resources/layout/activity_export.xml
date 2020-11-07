@@ -31,7 +31,7 @@
         <EditText
             android:inputType="date"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="60dp"
             android:id="@+id/textDateFrom"
             android:hint=""
             android:clickable="true"
@@ -48,7 +48,7 @@
         <EditText
             android:inputType="date"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="60dp"
             android:id="@+id/textDateTo"
             android:layout_below="@+id/textViewTo"
             android:hint=""

@@ -43,5 +43,9 @@ namespace GpsTracker.Database
         public string EmailSubject { get; set; }
 
         public int KeepLocationsForDays { get; set; }
+
+        public bool UploadOnMobileNetwork { get; set; }
+
+        public bool DisableTrackingOnWifi { get; set; }
     }
 }

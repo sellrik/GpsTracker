@@ -11,6 +11,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using GpsTracker.Database.Entity;
 using SQLite;
 using Environment = System.Environment;
 
@@ -31,6 +32,7 @@ namespace GpsTracker.Database
 
             _connection.CreateTable<LocationEntity>();
             _connection.CreateTable<SettingEntity>();
+            _connection.CreateTable<NetworkLogEntity>();
         }
 
         public int Insert(object entity)
@@ -108,6 +110,21 @@ namespace GpsTracker.Database
 
                 var ids = string.Join(", ", entities.Select(i => i.Id));
                 var query = $"delete from LocationEntity where Id in ({ids})";
+                _connection.Execute(query);
+            });
+        }
+
+        public void RemoveNetworkLogs(List<NetworkLogEntity> entities)
+        {
+            Lock<NetworkLogEntity>(() =>
+            {
+                if (!entities.Any())
+                {
+                    return;
+                }
+
+                var ids = string.Join(", ", entities.Select(i => i.Id));
+                var query = $"delete from NetworkLogEntity where Id in ({ids})";
                 _connection.Execute(query);
             });
         }

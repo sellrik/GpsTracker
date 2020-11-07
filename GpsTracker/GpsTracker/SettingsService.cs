@@ -45,7 +45,9 @@ namespace GpsTracker
                 EmailRecipient = GetStringValue(SettingTypeEnum.EmailRecipient),
                 EmailSendingInterval = GetIntValue(SettingTypeEnum.EmailSendingInterval),
                 EmailSubject = GetStringValue(SettingTypeEnum.EmailSubject),
-                KeepLocationsForDays = GetIntValue(SettingTypeEnum.KeepLocationsForDays)
+                KeepLocationsForDays = GetIntValue(SettingTypeEnum.KeepLocationsForDays),
+                UploadOnMobileNetwork = GetBoolValue(SettingTypeEnum.UploadOnMobileNetwork),
+                DisableTrackingOnWifi = GetBoolValue(SettingTypeEnum.DisableTrackingOnWifi)
             };
 
             int GetIntValue(SettingTypeEnum settingType)
@@ -90,6 +92,8 @@ namespace GpsTracker
             SaveSetting(SettingTypeEnum.EmailSendingInterval, settings.EmailSendingInterval);
             SaveSetting(SettingTypeEnum.EmailSubject, settings.EmailSubject);
             SaveSetting(SettingTypeEnum.KeepLocationsForDays, settings.KeepLocationsForDays);
+            SaveSetting(SettingTypeEnum.UploadOnMobileNetwork, settings.UploadOnMobileNetwork);
+            SaveSetting(SettingTypeEnum.DisableTrackingOnWifi, settings.DisableTrackingOnWifi);
 
             void SaveSetting<T>(SettingTypeEnum typeEnum, T value)
             {
@@ -130,6 +134,8 @@ namespace GpsTracker
                     return DefaultMinDistance.ToString();
                 case SettingTypeEnum.IsTelegramUploadEnabled:
                 case SettingTypeEnum.IsEmailSendingEnabled:
+                case SettingTypeEnum.UploadOnMobileNetwork:
+                case SettingTypeEnum.DisableTrackingOnWifi:
                     return false.ToString();
                 case SettingTypeEnum.UploadUrl:
                 case SettingTypeEnum.TelegramBotToken:

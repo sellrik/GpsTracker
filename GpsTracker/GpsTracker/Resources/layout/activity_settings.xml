@@ -255,12 +255,28 @@
                 android:inputType="number"
                 android:hint=""/>
 
+            <CheckBox
+                android:text="Upload on mobile network"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:padding="5dp"
+                android:id="@+id/checkBoxOnlyUploadOnWifi"
+                android:layout_below="@+id/editTextKeepLocationsFor"/>
+
+            <CheckBox
+                android:text="Disable tracking when connected to WIFI"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:padding="5dp"
+                android:id="@+id/checkBoxDisableTrackingOnWifi"
+                android:layout_below="@+id/checkBoxOnlyUploadOnWifi"/>
+
             <Button
                 android:text="SAVE"
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
                 android:id="@+id/buttonSave"
-                android:layout_below="@+id/editTextKeepLocationsFor"
+                android:layout_below="@+id/checkBoxDisableTrackingOnWifi"
                 android:padding="5dp"/>
         </RelativeLayout>
     </ScrollView>

@@ -73,6 +73,7 @@
     <Compile Include="CustomBroadcastReceiver.cs" />
     <Compile Include="Database\DatabaseService.cs" />
     <Compile Include="Database\Entity\LocationEntity.cs" />
+    <Compile Include="Database\Entity\NetworkLogEntity.cs" />
     <Compile Include="Database\Entity\SettingEntity.cs" />
     <Compile Include="Database\Entity\SettingTypeEnum.cs" />
     <Compile Include="DependencyInjection.cs" />
@@ -82,9 +83,12 @@
     <Compile Include="LocationService.cs" />
     <Compile Include="LocationUploaderService.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Models\JsonModel.cs" />
     <Compile Include="Models\LocationJsonModel.cs" />
     <Compile Include="Models\LocationUploadModel.cs" />
+    <Compile Include="Models\NetworkLogJsonModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
+    <Compile Include="NetworkLogService.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsActivity.cs" />

@@ -36,6 +36,8 @@ namespace GpsTracker
         private EditText _editTextEmailSubject;
 
         private EditText _editTextKeepLocationsForDays;
+        private CheckBox _checkBoxOnlyUploadOnWifi;
+        private CheckBox _checkBoxDisableTrackingOnWifi;
 
         private SettingsService _settingsService;
 
@@ -105,6 +107,8 @@ namespace GpsTracker
             _editTextEmailSubject = FindViewById<EditText>(Resource.Id.editTextEmailSubject);
 
             _editTextKeepLocationsForDays = FindViewById<EditText>(Resource.Id.editTextKeepLocationsFor);
+            _checkBoxOnlyUploadOnWifi = FindViewById<CheckBox>(Resource.Id.checkBoxOnlyUploadOnWifi);
+            _checkBoxDisableTrackingOnWifi = FindViewById<CheckBox>(Resource.Id.checkBoxDisableTrackingOnWifi);
 
             LoadSettings();
 
@@ -152,7 +156,9 @@ namespace GpsTracker
                 EmailRecipient = _editTextEmailRecipient.Text,
                 EmailSendingInterval = int.Parse(_editTextEmailSendingInterval.Text),
                 EmailSubject = _editTextEmailSubject.Text,
-                KeepLocationsForDays = int.Parse(_editTextKeepLocationsForDays.Text)
+                KeepLocationsForDays = int.Parse(_editTextKeepLocationsForDays.Text),
+                UploadOnMobileNetwork = _checkBoxOnlyUploadOnWifi.Checked,
+                DisableTrackingOnWifi = _checkBoxDisableTrackingOnWifi.Checked
             };
 
             _settingsService.SaveSettings(settings);
@@ -183,6 +189,8 @@ namespace GpsTracker
             _editTextEmailSendingInterval.Text = settings.EmailSendingInterval.ToString();
             _editTextEmailSubject.Text = settings.EmailSubject;
             _editTextKeepLocationsForDays.Text = settings.KeepLocationsForDays.ToString();
+            _checkBoxOnlyUploadOnWifi.Checked = settings.UploadOnMobileNetwork;
+            _checkBoxDisableTrackingOnWifi.Checked = settings.DisableTrackingOnWifi;
         }
     }
 }

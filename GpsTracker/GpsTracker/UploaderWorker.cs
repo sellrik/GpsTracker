@@ -24,6 +24,7 @@ namespace GpsTracker
     {
         SettingsService _settingsService;
         LocationService _locationService;
+        NetworkLogService _networkLogService;
 
         static bool IsRunning = false;
 
@@ -34,6 +35,7 @@ namespace GpsTracker
         {
             _settingsService = new SettingsService();
             _locationService = new LocationService();
+            _networkLogService = new NetworkLogService();
 
             _localBroadcastManager = LocalBroadcastManager.GetInstance(context);
         }
@@ -66,7 +68,9 @@ namespace GpsTracker
 
                 var exporter = new Exporter();
 
-                var json = exporter.CreateJson(locations);
+                var networkLogs = _networkLogService.QueryNotUploaded();
+
+                var json = exporter.CreateJson(locations, networkLogs);
 
                 var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
 
@@ -94,11 +98,20 @@ namespace GpsTracker
 
                 _locationService.UpdateLocations(locations);
 
+                foreach (var networkLog in networkLogs)
+                {
+                    networkLog.IsUploaded = true;
+                    networkLog.UploadDateTime = DateTime.UtcNow;
+                }
+
+                _networkLogService.Update(networkLogs);
+
                 var intent = new Intent("testAction");
                 intent.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - email sent: {locations.Count} location(s)");
                 _localBroadcastManager.SendBroadcast(intent);
 
                 _locationService.RemoveLocations(settings.KeepLocationsForDays);
+                _networkLogService.Remove(settings.KeepLocationsForDays);
 
                 return Result.InvokeSuccess();
             }
