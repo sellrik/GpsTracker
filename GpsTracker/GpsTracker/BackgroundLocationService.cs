@@ -150,11 +150,11 @@ namespace GpsTracker
                 var request = PeriodicWorkRequest
                     .Builder
                     .From<UploaderWorker>(TimeSpan.FromMinutes(settings.EmailSendingInterval))
-                    .SetBackoffCriteria(BackoffPolicy.Linear, TimeSpan.FromMinutes(5))
+                    //.SetBackoffCriteria(BackoffPolicy.Linear, TimeSpan.FromMinutes(5))
                     .SetConstraints(contstraints)
                     .Build();
 
-                WorkManager.Instance.EnqueueUniquePeriodicWork("GpsTrackerUploaderWorker", ExistingPeriodicWorkPolicy.Replace, request);
+                WorkManager.Instance.EnqueueUniquePeriodicWork("GpsTrackerUploaderWorker", ExistingPeriodicWorkPolicy.Keep, request); // TODO: ExistingPeriodicWorkPolicy.Replace?
             }
 
             IsStarted = true;
@@ -220,6 +220,7 @@ namespace GpsTracker
             builder.SetContentText("GPS tracker is running");
             builder.SetContentIntent(pendingIntent);
             builder.SetSmallIcon(Resource.Mipmap.ic_launcher);
+            builder.SetOngoing(true);
 
             return builder.Build();
         }
@@ -327,7 +328,7 @@ namespace GpsTracker
             //var info = _wifiManager.ConnectionInfo; TODO: permission
             _stopLocationUpdates();
 
-            _networkLogService.Add(DateTime.Now, true);
+            _networkLogService.Add(DateTime.UtcNow, true);
         }
 
         public override void OnLost(Network network)
@@ -335,7 +336,7 @@ namespace GpsTracker
             base.OnLost(network);
             _startLocationUpdates();
 
-            _networkLogService.Add(DateTime.Now, false);
+            _networkLogService.Add(DateTime.UtcNow, false);
         }
     }
 }

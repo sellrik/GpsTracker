@@ -121,14 +121,14 @@ namespace GpsTracker
                 intent.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - email sending failed");
                 _localBroadcastManager.SendBroadcast(intent);
 
-                if (RunAttemptCount >= 3)
-                {
+                //if (RunAttemptCount >= 3)
+                //{
                     return Result.InvokeFailure();
-                }
-                else
-                {
-                    return Result.InvokeRetry();
-                }
+                //}
+                //else
+                //{
+                //    return Result.InvokeRetry();
+                //}
             }
             finally
             {
