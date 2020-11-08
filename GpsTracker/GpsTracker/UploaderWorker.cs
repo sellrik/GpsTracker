@@ -7,16 +7,9 @@ using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Android.App;
 using Android.Content;
-using Android.OS;
-using Android.Runtime;
 using Android.Support.V4.Content;
-using Android.Views;
-using Android.Widget;
 using AndroidX.Work;
-using GpsTracker.Models;
-using Newtonsoft.Json;
 
 namespace GpsTracker
 {
@@ -26,11 +19,26 @@ namespace GpsTracker
         LocationService _locationService;
         NetworkLogService _networkLogService;
 
-        static bool IsRunning = false;
+        private static object _isRunningLockObject = new object();
+
+        private static bool _isRunning = false;
+        public bool IsRunning
+        {
+            get
+            {
+                return _isRunning;
+            }
+            set
+            {
+                lock (_isRunningLockObject)
+                {
+                    _isRunning = value;
+                }
+            }
+        }
 
         LocalBroadcastManager _localBroadcastManager;
 
-        // TODO?
         public UploaderWorker(Context context, WorkerParameters workerParameters) : base(context, workerParameters)
         {
             _settingsService = new SettingsService();
@@ -42,7 +50,7 @@ namespace GpsTracker
 
         public override Result DoWork()
         {
-            if (IsRunning) // TODO: kell?
+            if (IsRunning)
             {
                 return Result.InvokeSuccess();
             }
@@ -53,8 +61,12 @@ namespace GpsTracker
 
                 var settings = _settingsService.GetSettings();
 
-                // TODO?
                 if (!settings.IsEmailSendingEnabled)
+                {
+                    return Result.InvokeSuccess();
+                }
+
+                if (!settings.UploadOnMobileNetwork && !CustomNetworkCallback.IsConnected) // TODO
                 {
                     return Result.InvokeSuccess();
                 }
@@ -120,15 +132,7 @@ namespace GpsTracker
                 var intent = new Intent("testAction");
                 intent.PutExtra("x", $"{DateTime.Now.ToString("HH:mm:ss")} - email sending failed");
                 _localBroadcastManager.SendBroadcast(intent);
-
-                //if (RunAttemptCount >= 3)
-                //{
-                    return Result.InvokeFailure();
-                //}
-                //else
-                //{
-                //    return Result.InvokeRetry();
-                //}
+                return Result.InvokeSuccess(); // TODO?
             }
             finally
             {

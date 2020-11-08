@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="BackgroundLocationService.cs" />
     <Compile Include="CustomBroadcastReceiver.cs" />
+    <Compile Include="CustomNetworkCallback.cs" />
     <Compile Include="Database\DatabaseService.cs" />
     <Compile Include="Database\Entity\LocationEntity.cs" />
     <Compile Include="Database\Entity\NetworkLogEntity.cs" />

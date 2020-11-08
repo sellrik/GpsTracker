@@ -95,11 +95,6 @@ namespace GpsTracker
             base.OnTaskRemoved(rootIntent);
 
             Stop();
-
-            if (_customNetworkCallback != null)
-            {
-                ConnectivityManager.UnregisterNetworkCallback(_customNetworkCallback);
-            }
         }
 
         public override void OnDestroy()
@@ -107,11 +102,6 @@ namespace GpsTracker
             base.OnDestroy();
 
             Stop();
-
-            if (_customNetworkCallback != null)
-            {
-                ConnectivityManager.UnregisterNetworkCallback(_customNetworkCallback);
-            }
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, [GeneratedEnum] StartCommandFlags flags, int startId)
@@ -130,15 +120,12 @@ namespace GpsTracker
 
             StartLocationUpdates();
 
-            if (settings.DisableTrackingOnWifi)
-            {
-                var builder = new NetworkRequest.Builder();
-                builder.AddTransportType(TransportType.Wifi);
-                var networkRequest = builder.Build();
+            var builder = new NetworkRequest.Builder();
+            builder.AddTransportType(TransportType.Wifi);
+            var networkRequest = builder.Build();
 
-                _customNetworkCallback = new CustomNetworkCallback((WifiManager)GetSystemService(WifiService), StartLocationUpdates, StopLocationUpdates);
-                ConnectivityManager.RegisterNetworkCallback(networkRequest, _customNetworkCallback);
-            }
+            _customNetworkCallback = new CustomNetworkCallback((WifiManager)GetSystemService(WifiService), StartLocationUpdates, StopLocationUpdates);
+            ConnectivityManager.RegisterNetworkCallback(networkRequest, _customNetworkCallback);
 
             if (settings.IsEmailSendingEnabled)
             {
@@ -167,10 +154,18 @@ namespace GpsTracker
             StopForeground(true);
             IsStarted = false;
 
-            WorkManager.Instance.CancelAllWork();
+            //WorkManager.Instance.CancelAllWork();
+            WorkManager.Instance.CancelUniqueWork("GpsTrackerUploaderWorker");
 
             var notificationManager = NotificationManagerCompat.From(Application.Context);
             notificationManager.CancelAll();
+
+            if (_customNetworkCallback != null)
+            {
+                ConnectivityManager.UnregisterNetworkCallback(_customNetworkCallback);
+                CustomNetworkCallback.IsConnected = false;
+                _customNetworkCallback = null;
+            }
         }
 
         private void StartLocationUpdates(SettingsModel settings)
@@ -303,40 +298,6 @@ namespace GpsTracker
             {
                 Toast.MakeText(this, "GPS is disabled!", ToastLength.Long).Show();
             }
-        }
-    }
-
-    internal class CustomNetworkCallback : ConnectivityManager.NetworkCallback
-    {
-        WifiManager _wifiManager;
-        Action _startLocationUpdates;
-        Action _stopLocationUpdates;
-        NetworkLogService _networkLogService;
-
-        public CustomNetworkCallback(WifiManager wifiManager, Action startLocationUpdates, Action stopLocationUpdates)
-        {
-            _wifiManager = wifiManager;
-            _startLocationUpdates = startLocationUpdates;
-            _stopLocationUpdates = stopLocationUpdates;
-
-            _networkLogService = new NetworkLogService();
-        }
-
-        public override void OnAvailable(Network network)
-        {
-            base.OnAvailable(network);
-            //var info = _wifiManager.ConnectionInfo; TODO: permission
-            _stopLocationUpdates();
-
-            _networkLogService.Add(DateTime.UtcNow, true);
-        }
-
-        public override void OnLost(Network network)
-        {
-            base.OnLost(network);
-            _startLocationUpdates();
-
-            _networkLogService.Add(DateTime.UtcNow, false);
         }
     }
 }
