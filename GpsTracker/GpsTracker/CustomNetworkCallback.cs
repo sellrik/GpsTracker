@@ -55,7 +55,7 @@ namespace GpsTracker
             base.OnAvailable(network);
             //var info = _wifiManager.ConnectionInfo; TODO: permission
 
-            _isConnected = true;
+            IsConnected = true;
 
             if (DisableTrackingOnWifi())
             {
@@ -66,7 +66,7 @@ namespace GpsTracker
 
         public override void OnLost(Network network)
         {
-            _isConnected = false;
+            IsConnected = false;
 
             base.OnLost(network);
 
