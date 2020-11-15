@@ -26,7 +26,10 @@ namespace GpsTracker
         {
             get
             {
-                return _isRunning;
+                lock (_isRunningLockObject)
+                {
+                    return _isRunning;
+                }
             }
             set
             {

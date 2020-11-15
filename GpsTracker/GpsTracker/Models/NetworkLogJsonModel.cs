@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using GpsTracker.Database.Entity;
+using Newtonsoft.Json;
 
 namespace GpsTracker.Models
 {
@@ -21,11 +22,15 @@ namespace GpsTracker.Models
 
         public DateTime DateTime { get; set; }
 
+        [JsonProperty("SSID")]
+        public string Ssid { get; set; }
+
         public NetworkLogJsonModel(NetworkLogEntity entity)
         {
             Id = entity.Id;
             IsConnected = entity.IsConnected;
             DateTime = entity.DateTime;
+            Ssid = entity.Ssid;
         }
     }
 }

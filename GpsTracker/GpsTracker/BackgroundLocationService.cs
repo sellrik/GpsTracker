@@ -129,16 +129,11 @@ namespace GpsTracker
 
             if (settings.IsEmailSendingEnabled)
             {
-                var contstraints = new Constraints
-                    .Builder()
-                    .SetRequiredNetworkType(settings.UploadOnMobileNetwork ? NetworkType.Connected : NetworkType.Unmetered)
-                    .Build();
-
                 var request = PeriodicWorkRequest
                     .Builder
                     .From<UploaderWorker>(TimeSpan.FromMinutes(settings.EmailSendingInterval))
                     //.SetBackoffCriteria(BackoffPolicy.Linear, TimeSpan.FromMinutes(5))
-                    .SetConstraints(contstraints)
+                    .SetConstraints(GetConstraints(settings))
                     .Build();
 
                 WorkManager.Instance.EnqueueUniquePeriodicWork("GpsTrackerUploaderWorker", ExistingPeriodicWorkPolicy.Keep, request); // TODO: ExistingPeriodicWorkPolicy.Replace?
@@ -154,8 +149,18 @@ namespace GpsTracker
             StopForeground(true);
             IsStarted = false;
 
-            //WorkManager.Instance.CancelAllWork();
-            WorkManager.Instance.CancelUniqueWork("GpsTrackerUploaderWorker");
+            WorkManager.Instance.CancelAllWork();
+            //WorkManager.Instance.CancelUniqueWork("GpsTrackerUploaderWorker");
+
+            //var settings = _settingsService.GetSettings();
+
+            var request = OneTimeWorkRequest
+                .Builder
+                .From<UploaderWorker>()
+                //.SetConstraints(GetConstraints(settings))
+                .Build();
+
+            WorkManager.Instance.EnqueueUniqueWork("GpsTrackerUploaderWorkerOneTime", ExistingWorkPolicy.Keep, request);
 
             var notificationManager = NotificationManagerCompat.From(Application.Context);
             notificationManager.CancelAll();
@@ -163,9 +168,18 @@ namespace GpsTracker
             if (_customNetworkCallback != null)
             {
                 ConnectivityManager.UnregisterNetworkCallback(_customNetworkCallback);
-                CustomNetworkCallback.IsConnected = false;
                 _customNetworkCallback = null;
             }
+        }
+
+        private Constraints GetConstraints(SettingsModel settings)
+        {
+            var contstraints = new Constraints
+                .Builder()
+                .SetRequiredNetworkType(settings.UploadOnMobileNetwork ? NetworkType.Connected : NetworkType.Unmetered)
+                .Build();
+
+            return contstraints;
         }
 
         private void StartLocationUpdates(SettingsModel settings)

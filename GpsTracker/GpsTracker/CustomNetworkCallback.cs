@@ -29,7 +29,10 @@ namespace GpsTracker
         {
             get
             {
-                return _isConnected;
+                lock (_isConnectedLockObject)
+                {
+                    return _isConnected;
+                }
             }
             set
             {
@@ -48,20 +51,24 @@ namespace GpsTracker
 
             _networkLogService = new NetworkLogService();
             _settingsService = new SettingsService();
+            IsConnected = false;
         }
 
         public override void OnAvailable(Network network)
         {
             base.OnAvailable(network);
-            //var info = _wifiManager.ConnectionInfo; TODO: permission
+
+            var info = _wifiManager.ConnectionInfo;
+            var ssid = info.SSID.Replace("\"", "");
 
             IsConnected = true;
 
             if (DisableTrackingOnWifi())
             {
                 _stopLocationUpdates();
-                _networkLogService.Add(DateTime.UtcNow, true);
             }
+
+            _networkLogService.Add(DateTime.UtcNow, true, ssid);
         }
 
         public override void OnLost(Network network)
@@ -73,9 +80,9 @@ namespace GpsTracker
             if (DisableTrackingOnWifi())
             {
                 _startLocationUpdates();
-
-                _networkLogService.Add(DateTime.UtcNow, false);
             }
+
+            _networkLogService.Add(DateTime.UtcNow, false, string.Empty); // TODO?
         }
 
         private bool DisableTrackingOnWifi()

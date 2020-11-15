@@ -24,12 +24,13 @@ namespace GpsTracker
             _databaseService = DependencyInjection.Container.Resolve<DatabaseService>();
         }
 
-        public void Add(DateTime dateTime, bool isConnected)
+        public void Add(DateTime dateTime, bool isConnected, string ssid)
         {
             var entity = new NetworkLogEntity
             {
                 IsConnected = isConnected,
-                DateTime = dateTime
+                DateTime = dateTime,
+                Ssid = ssid
             };
 
             _databaseService.Insert(entity);
