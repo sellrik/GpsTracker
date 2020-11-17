@@ -22,6 +22,14 @@ namespace GpsTracker.Models
 
         public DateTime DateTime { get; set; }
 
+        public long Time
+        {
+            get
+            {
+                return ((DateTimeOffset)DateTime).ToUnixTimeMilliseconds();
+            }
+        }
+
         [JsonProperty("SSID")]
         public string Ssid { get; set; }
 
@@ -29,7 +37,7 @@ namespace GpsTracker.Models
         {
             Id = entity.Id;
             IsConnected = entity.IsConnected;
-            DateTime = entity.DateTime;
+            DateTime = DateTime.SpecifyKind(entity.DateTime, DateTimeKind.Utc);
             Ssid = entity.Ssid;
         }
     }
