@@ -33,12 +33,15 @@ namespace GpsTracker.Models
         [JsonProperty("SSID")]
         public string Ssid { get; set; }
 
+        public int HashCode { get; set; }
+
         public NetworkLogJsonModel(NetworkLogEntity entity)
         {
             Id = entity.Id;
             IsConnected = entity.IsConnected;
             DateTime = DateTime.SpecifyKind(entity.DateTime, DateTimeKind.Utc);
             Ssid = entity.Ssid;
+            HashCode = entity.HashCode;
         }
     }
 }

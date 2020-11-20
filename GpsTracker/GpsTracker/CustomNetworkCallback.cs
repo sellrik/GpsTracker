@@ -21,6 +21,7 @@ namespace GpsTracker
         Action _stopLocationUpdates;
         NetworkLogService _networkLogService;
         SettingsService _settingsService;
+        Dictionary<int, string> _networkDictionary = new Dictionary<int, string>();
 
         private static object _isConnectedLockObject = new object();
         private static bool _isConnected;
@@ -56,10 +57,19 @@ namespace GpsTracker
 
         public override void OnAvailable(Network network)
         {
-            base.OnAvailable(network);
-
             var info = _wifiManager.ConnectionInfo;
             var ssid = info.SSID.Replace("\"", "");
+
+            var hashCode = network.GetHashCode();
+
+            if (!_networkDictionary.TryGetValue(hashCode, out var value))
+            {
+                _networkDictionary.Add(hashCode, ssid);
+            }
+
+            _networkLogService.Add(DateTime.UtcNow, true, ssid, hashCode);
+
+            base.OnAvailable(network);
 
             IsConnected = true;
 
@@ -68,12 +78,23 @@ namespace GpsTracker
                 _stopLocationUpdates();
             }
 
-            _networkLogService.Add(DateTime.UtcNow, true, ssid);
         }
 
         public override void OnLost(Network network)
         {
             IsConnected = false;
+
+            var hashCode = network.GetHashCode();
+
+            string ssid = string.Empty;
+
+            if (_networkDictionary.TryGetValue(hashCode, out var value))
+            {
+                _networkDictionary.Remove(hashCode);
+                ssid = value;
+            }
+
+            _networkLogService.Add(DateTime.UtcNow, false, ssid, hashCode); // TODO?
 
             base.OnLost(network);
 
@@ -81,8 +102,16 @@ namespace GpsTracker
             {
                 _startLocationUpdates();
             }
+        }
 
-            _networkLogService.Add(DateTime.UtcNow, false, string.Empty); // TODO?
+        public override void OnLosing(Network network, int maxMsToLive)
+        {
+            base.OnLosing(network, maxMsToLive);
+        }
+
+        public override void OnUnavailable()
+        {
+            base.OnUnavailable();
         }
 
         private bool DisableTrackingOnWifi()

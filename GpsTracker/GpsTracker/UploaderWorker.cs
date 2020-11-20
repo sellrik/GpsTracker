@@ -75,15 +75,14 @@ namespace GpsTracker
                 }
 
                 var locations = _locationService.QueryNotUploadedLocations();
+                var networkLogs = _networkLogService.QueryNotUploaded();
 
-                if (!locations.Any())
+                if (!locations.Any() && !networkLogs.Any())
                 {
                     return Result.InvokeSuccess();
                 }
 
                 var exporter = new Exporter();
-
-                var networkLogs = _networkLogService.QueryNotUploaded();
 
                 var json = exporter.CreateJson(locations, networkLogs);
 

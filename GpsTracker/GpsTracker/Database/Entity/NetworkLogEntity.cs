@@ -14,6 +14,8 @@ namespace GpsTracker.Database.Entity
 
         public string Ssid { get; set; }
 
+        public int HashCode { get; set; }
+
         public bool IsUploaded { get; set; } = false;
 
         public DateTime UploadDateTime { get; set; }
