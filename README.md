@@ -16,4 +16,4 @@ Settings:
 - Upload on mobile network
 - Disable tracking when connected to WIFI
 
-
+The apk is uploaded to the Release folder. To install it, you have to copy it to the device and enable unkown sources to install it.
