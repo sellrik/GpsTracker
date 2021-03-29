@@ -1,0 +1,192 @@
+﻿using Android.Content;
+using Android.OS;
+using Android.Support.V4.Content;
+using Android.Views;
+using Android.Widget;
+using AndroidX.Fragment.App;
+using GpsTracker.Models;
+using System;
+using System.Globalization;
+
+namespace GpsTracker.Activities
+{
+    public class TrackingFragment : Fragment
+    {
+        private bool isStarted = false;
+
+        private DateTime startTime;
+
+        private double distance;
+
+        private LocationChangedModel currentModel;
+
+        private TrackingBroadcastReceiver _trackingBroadcastReceiver;
+
+        private LocalBroadcastManager LocalBroadcastManager
+        {
+            get
+            {
+                return LocalBroadcastManager.GetInstance(Context);
+            }
+        }
+
+        private TextView textViewTrackingCoordinates;
+        private TextView textViewTrackingDistance;
+        private TextView textViewTrackingDuration;
+        private TextView textViewTrackingStarted;
+
+        public override void OnCreate(Bundle savedInstanceState)
+        {
+            base.OnCreate(savedInstanceState);
+
+            // Create your fragment here
+        }
+
+        public override void OnResume()
+        {
+            base.OnResume();
+            RegisterBroadcastReceiver();
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            UnRegisterBroadcastReceiver();
+        }
+
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        {
+            var view = inflater.Inflate(Resource.Layout.fragment_tracking, container, false);
+
+            textViewTrackingCoordinates = view.FindViewById<TextView>(Resource.Id.textViewTrackingCoordinates);
+            textViewTrackingCoordinates.Text = string.Empty;
+
+            textViewTrackingDistance = view.FindViewById<TextView>(Resource.Id.textViewTrackingDistance);
+            textViewTrackingDistance.Text = string.Empty;
+
+            textViewTrackingDuration = view.FindViewById<TextView>(Resource.Id.textViewTrackingDuration);
+            textViewTrackingDuration.Text = string.Empty;
+
+            textViewTrackingStarted = view.FindViewById<TextView>(Resource.Id.textViewTrackingStarted);
+            textViewTrackingStarted.Text = string.Empty;
+
+            return view;
+        }
+
+        private void RegisterBroadcastReceiver()
+        {
+            if (_trackingBroadcastReceiver == null)
+            {
+                var intentFilter = new IntentFilter();
+                intentFilter.AddAction("LocationChanged");
+                intentFilter.AddAction("TrackingStarted");
+                intentFilter.AddAction("TrackingStopped");
+
+                _trackingBroadcastReceiver = new TrackingBroadcastReceiver(LocationChanged, TrackingStarted, TrackingStopped);
+
+                LocalBroadcastManager.RegisterReceiver(_trackingBroadcastReceiver, intentFilter);
+            }
+        }
+
+        private void UnRegisterBroadcastReceiver()
+        {
+            if (_trackingBroadcastReceiver != null)
+            {
+                LocalBroadcastManager.UnregisterReceiver(_trackingBroadcastReceiver);
+                _trackingBroadcastReceiver = null;
+            }
+        }
+
+        private void LocationChanged(LocationChangedModel model)
+        {
+            var dateTime = GetDateTime(model.Time);
+
+            if (!isStarted)
+            {
+                isStarted = true;
+                startTime = dateTime;
+            }
+
+            var coordinatesText = $"N{FormatValue(model.Latitude)} E{FormatValue(model.Longitude)}";
+            textViewTrackingCoordinates.Text = coordinatesText;
+
+            var duration = dateTime - startTime;
+            var durationText = $"Duration: {duration.Hours}h {duration.Minutes}m {duration.Seconds}s";
+            textViewTrackingDuration.Text = durationText;
+
+            var startedText = $"Started: {startTime.ToLocalTime().ToString("MM.dd.yyyy HH:mm")}";
+            textViewTrackingStarted.Text = startedText;
+
+            // TODO?
+            if (currentModel != null && dateTime > GetDateTime(currentModel.Time))
+            {
+                var delta = CalculateDistance(currentModel.Latitude, currentModel.Longitude, model.Latitude, model.Longitude);
+                distance += delta;
+            }
+
+            textViewTrackingDistance.Text = distance.ToString("Distance: 0.00km");
+            currentModel = model;
+
+            string FormatValue(double value)
+            {
+                return value.ToString("0.000000");
+            }
+        }
+
+        private void TrackingStarted()
+        {
+            isStarted = false;
+            startTime = default(DateTime);
+            distance = 0;
+            currentModel = null;
+
+            textViewTrackingCoordinates.Text = string.Empty;
+            textViewTrackingDuration.Text = string.Empty;
+            textViewTrackingStarted.Text = string.Empty;
+            textViewTrackingDistance.Text = string.Empty;
+        }
+
+        private void TrackingStopped()
+        {
+            isStarted = false;
+            startTime = default(DateTime);
+            distance = 0;
+            currentModel = null;
+
+            textViewTrackingCoordinates.Text = string.Empty;
+            textViewTrackingDuration.Text = string.Empty;
+            textViewTrackingStarted.Text = string.Empty;
+            textViewTrackingDistance.Text = string.Empty;
+        }
+
+        private DateTime GetDateTime(long ticks)
+        {
+            var startDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return startDate.AddMilliseconds(ticks);
+        }
+
+        private double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            // https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
+            // http://www.movable-type.co.uk/scripts/latlong.html
+
+            var earthRadiusKm = 6371;
+            var φ1 = DegreesToRadians(lat1);
+            var φ2 = DegreesToRadians(lat2);
+
+            var Δφ = DegreesToRadians(lat2 - lat1);
+            var Δλ = DegreesToRadians(lon2 - lon1);
+
+            var a = Math.Sin(Δφ / 2) * Math.Sin(Δφ / 2) + Math.Cos(φ1) * Math.Cos(φ2) * Math.Sin(Δλ / 2) * Math.Sin(Δλ / 2);
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            var distance = earthRadiusKm * c;
+
+            return distance;
+
+            double DegreesToRadians(double value)
+            {
+                return (value * Math.PI) / 180;
+            }
+        }
+    }
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="10px">
+
+    <TextView
+        android:text="N47.123456 E19.123456"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/textViewTrackingCoordinates"
+        android:textAlignment="center" />
+
+    <TextView
+        android:text="Started: 12.31.2021 13:15"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/textViewTrackingStarted"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:text="Duration: 1h 39m 10 sec"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/textViewTrackingDuration"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:text="Distance: 13.5km"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/textViewTrackingDistance"
+        android:textAlignment="center"/>
+
+</LinearLayout>

@@ -18,6 +18,8 @@ using Android.Views;
 using Android.Widget;
 using AndroidX.Work;
 using GpsTracker.Database;
+using GpsTracker.Models;
+using Newtonsoft.Json;
 using Unity;
 
 namespace GpsTracker
@@ -264,6 +266,17 @@ namespace GpsTracker
                 _locationService.AddLocation(location);
 
                 _locationUploaderService.UploadLocations();
+
+                Task.Run(() =>
+                {
+                    var model = new LocationChangedModel(location);
+                    var json = JsonConvert.SerializeObject(model);
+
+                    var intent = new Intent("LocationChanged");
+                    intent.PutExtra("Location", json);
+
+                    _localBroadcastManager.SendBroadcast(intent);
+                });
 
                 var settings = _settingsService.GetSettings();
 

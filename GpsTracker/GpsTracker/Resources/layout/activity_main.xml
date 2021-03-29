@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     android:id="@+id/relativeLayout3">
 
-    <include
+	<include
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
-    <RelativeLayout
+	<RelativeLayout
         android:minWidth="25px"
         android:minHeight="25px"
         android:layout_width="match_parent"
@@ -19,26 +19,23 @@
         android:padding="5dp"
         android:layout_below="@id/toolbar">
 
-        <Button
+		<Button
             android:text="START"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:id="@+id/buttonStartStop" />
-        
-<!--            <TextView
-            android:text=""
+		<com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewLastUpdate"
-            android:layout_below="@+id/buttonStartStop"
-            android:textAlignment="center" />-->
-
-        <ListView
+             android:id="@+id/tabLayout"
+            android:layout_below="@+id/buttonStartStop"/>
+		    
+		<androidx.viewpager.widget.ViewPager
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/listViewLog"
-            android:layout_below="@+id/buttonStartStop"/>
-    </RelativeLayout>
+            android:id="@+id/viewPager1"
+            android:layout_below="@+id/tabLayout"/>
+	</RelativeLayout>
 </RelativeLayout>

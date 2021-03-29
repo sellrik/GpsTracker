@@ -13,7 +13,7 @@ using AndroidX.Work;
 
 namespace GpsTracker
 {
-    public class UploaderWorker : Worker
+    public class UploaderWorker : AndroidX.Work.Worker
     {
         SettingsService _settingsService;
         LocationService _locationService;

@@ -6,17 +6,17 @@ using Android;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Locations;
 using Android.OS;
 using Android.Runtime;
-using Android.Support.Design.Widget;
-using Android.Support.V4.App;
-using Android.Support.V4.Content;
-using Android.Support.V7.App;
-using Android.Text.Method;
 using Android.Views;
 using Android.Widget;
-using SQLite;
+using AndroidX.AppCompat.App;
+using AndroidX.Core.App;
+using AndroidX.Core.Content;
+using AndroidX.LocalBroadcastManager.Content;
+using AndroidX.ViewPager.Widget;
+using Google.Android.Material.Tabs;
+using GpsTracker.Activities;
 
 namespace GpsTracker
 {
@@ -29,12 +29,6 @@ namespace GpsTracker
 
         private string _startStopButtonStartedText = "STOP";
         private string _startStopButtonStoppedText = "START";
-
-        private CustomBroadcastReceiver _broadcastReceiver;
-
-        private ListView _listViewLog;
-        private static List<string> _listViewData = new List<string>();
-        private CustomAdapter _adapter;
 
         private LocalBroadcastManager LocalBroadcastManager
         {
@@ -52,19 +46,19 @@ namespace GpsTracker
 
             DependencyInjection.Setup();
 
-            var toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
+            var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);       
             SetSupportActionBar(toolbar);
             SupportActionBar.Title = "GPS tracker";
 
             _startStopButton = FindViewById<Button>(Resource.Id.buttonStartStop);
             _startStopButton.Click += startStopButton_Click;
 
-            _listViewLog = FindViewById<ListView>(Resource.Id.listViewLog);
-            var inflater = (LayoutInflater)GetSystemService(Context.LayoutInflaterService);
-            _adapter = new CustomAdapter(inflater, _listViewData);
-            _listViewLog.Adapter = _adapter;
+            var tabLayout = FindViewById<TabLayout>(Resource.Id.tabLayout);
+            var viewPager = FindViewById<ViewPager>(Resource.Id.viewPager1);
+            viewPager.OffscreenPageLimit = 3;
+            viewPager.Adapter = new CustomPagerAdapter(SupportFragmentManager);
 
-            RegisterBroadcastReceiver();
+            tabLayout.SetupWithViewPager(viewPager);
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
@@ -100,7 +94,6 @@ namespace GpsTracker
         {
             base.OnResume();
             SetStartStopButtonText(BackgroundLocationService.IsStarted);
-            RegisterBroadcastReceiver();
         }
 
         protected override void OnPause()
@@ -116,7 +109,6 @@ namespace GpsTracker
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            UnRegisterBroadcastReceiver();
             StopService();
         }
 
@@ -130,6 +122,9 @@ namespace GpsTracker
             }
 
             StartService();
+
+            var intent = new Intent("TrackingStarted");
+            LocalBroadcastManager.SendBroadcast(intent);
         }
 
         private void startStopButton_Click(object sender, EventArgs e)
@@ -166,6 +161,9 @@ namespace GpsTracker
         {
             var intent = new Intent(this, typeof(BackgroundLocationService));
             StopService(intent);
+
+            var intent2 = new Intent("TrackingStopped");
+            LocalBroadcastManager.SendBroadcast(intent2);
         }
 
         private void SetStartStopButtonText(bool isServiceStarted)
@@ -222,46 +220,6 @@ namespace GpsTracker
             }
 
             return false;
-        }
-
-        private void RegisterBroadcastReceiver()
-        {
-            if (_broadcastReceiver == null)
-            {
-                var intentFilter = new IntentFilter();
-                intentFilter.AddAction("testAction");
-
-                _broadcastReceiver = new CustomBroadcastReceiver(AddLog);
-
-                LocalBroadcastManager.RegisterReceiver(_broadcastReceiver, intentFilter);
-            }
-        }
-
-        private void UnRegisterBroadcastReceiver()
-        {
-            if (_broadcastReceiver != null)
-            {
-                LocalBroadcastManager.UnregisterReceiver(_broadcastReceiver);
-                _broadcastReceiver = null;
-            }
-        }
-
-        object _lockObject = new object();
-        private void AddLog(string data)
-        {
-            RunOnUiThread(() =>
-            {
-                _listViewData.Add(data);
-                _adapter.NotifyDataSetChanged();
-
-                lock (_lockObject)
-                {
-                    if (_adapter.Count == 11)
-                    {
-                        _listViewData.RemoveAt(0);
-                    }
-                }
-            });
         }
     }
 
