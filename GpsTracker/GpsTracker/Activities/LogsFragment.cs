@@ -81,20 +81,20 @@ namespace GpsTracker.Activities
 
         private void AddLog(string data)
         {
-            // TODO
-            //RunOnUiThread(() =>
-            //{
-                _listViewData.Add(data);
-                _adapter.NotifyDataSetChanged();
-
+            Activity.RunOnUiThread(() =>
+            {
                 lock (_lockObject)
                 {
+                    _listViewData.Add(data);
+
                     if (_adapter.Count == 11)
                     {
                         _listViewData.RemoveAt(0);
                     }
+
+                    _adapter.NotifyDataSetChanged();
                 }
-            //});
+            });
         }
     }
 }
