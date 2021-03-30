@@ -19,11 +19,6 @@
         android:padding="5dp"
         android:layout_below="@id/toolbar">
 
-		<Button
-            android:text="START"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:id="@+id/buttonStartStop" />
 		<com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

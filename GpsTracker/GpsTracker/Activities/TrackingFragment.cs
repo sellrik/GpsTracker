@@ -1,8 +1,12 @@
-﻿using Android.Content;
+﻿using Android;
+using Android.Content;
+using Android.Content.PM;
 using Android.OS;
+using Android.Runtime;
 using Android.Support.V4.Content;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Core.App;
 using AndroidX.Fragment.App;
 using GpsTracker.Models;
 using System;
@@ -12,6 +16,11 @@ namespace GpsTracker.Activities
 {
     public class TrackingFragment : Fragment
     {
+        const string _startStopButtonStartedText = "STOP";
+        const string _startStopButtonStoppedText = "START";
+        const int AccessFineLocationPermissionCode = 123;
+        bool _accessFineLocationPermissionGranted = false;
+
         private bool isStarted = false;
 
         private DateTime startTime;
@@ -22,18 +31,13 @@ namespace GpsTracker.Activities
 
         private TrackingBroadcastReceiver _trackingBroadcastReceiver;
 
-        private LocalBroadcastManager LocalBroadcastManager
-        {
-            get
-            {
-                return LocalBroadcastManager.GetInstance(Context);
-            }
-        }
+        private LocalBroadcastManager LocalBroadcastManager => LocalBroadcastManager.GetInstance(Context);
 
         private TextView textViewTrackingCoordinates;
         private TextView textViewTrackingDistance;
         private TextView textViewTrackingDuration;
         private TextView textViewTrackingStarted;
+        private Button _startStopButton;
 
         public override void OnCreate(Bundle savedInstanceState)
         {
@@ -46,12 +50,14 @@ namespace GpsTracker.Activities
         {
             base.OnResume();
             RegisterBroadcastReceiver();
+            SetStartStopButtonText(BackgroundLocationService.IsStarted);
         }
 
         public override void OnDestroy()
         {
             base.OnDestroy();
             UnRegisterBroadcastReceiver();
+            StopService();
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -70,7 +76,129 @@ namespace GpsTracker.Activities
             textViewTrackingStarted = view.FindViewById<TextView>(Resource.Id.textViewTrackingStarted);
             textViewTrackingStarted.Text = string.Empty;
 
+            _startStopButton = view.FindViewById<Button>(Resource.Id.buttonStartStop);
+            _startStopButton.Click += startStopButton_Click;
+
             return view;
+        }
+
+        private void startStopButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _startStopButton.Enabled = false;
+
+                if (_startStopButton.Text == _startStopButtonStoppedText) // Stopped
+                {
+                    StartLocationService();
+                    SetStartStopButtonText(true);
+                }
+                else // Started
+                {
+                    StopService();
+
+                    SetStartStopButtonText(false);
+                }
+            }
+            finally
+            {
+                _startStopButton.Enabled = true;
+            }
+        }
+
+        private void StartLocationService()
+        {
+            CheckPermission();
+
+            if (!HasPermission())
+            {
+                return;
+            }
+
+            StartService();
+
+            var intent = new Intent("TrackingStarted");
+            LocalBroadcastManager.SendBroadcast(intent);
+        }
+
+        void StartService()
+        {
+            var intent = new Intent(Context, typeof(BackgroundLocationService));
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                Activity.StartForegroundService(intent);
+            }
+            else
+            {
+                Activity.StartService(intent);
+            }
+
+        }
+
+        void StopService()
+        {
+            var intent = new Intent(Context, typeof(BackgroundLocationService));
+            Activity.StopService(intent);
+
+            var intent2 = new Intent("TrackingStopped");
+            LocalBroadcastManager.SendBroadcast(intent2);
+        }
+
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
+        {
+            if (requestCode == AccessFineLocationPermissionCode)
+            {
+                if (grantResults.Length == 1 && grantResults[0] == Permission.Granted)
+                {
+                    _accessFineLocationPermissionGranted = true;
+                }
+                else
+                {
+                    _accessFineLocationPermissionGranted = false;
+                }
+            }
+        }
+
+        public bool CheckPermission()
+        {
+            if (ContextCompat.CheckSelfPermission(Context, Manifest.Permission.AccessFineLocation) == Permission.Granted)
+            {
+                _accessFineLocationPermissionGranted = true;
+            }
+            else
+            {
+                Toast.MakeText(Context, "'AccessFineLocation' permission is missing!", ToastLength.Short).Show();
+
+                ActivityCompat.RequestPermissions(Activity, new[] { Manifest.Permission.AccessFineLocation }, AccessFineLocationPermissionCode);
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool HasPermission()
+        {
+            if (_accessFineLocationPermissionGranted)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void SetStartStopButtonText(bool isServiceStarted)
+        {
+            if (isServiceStarted)
+            {
+                _startStopButton.Text = _startStopButtonStartedText;
+            }
+            else
+            {
+                _startStopButton.Text = _startStopButtonStoppedText;
+            }
+
         }
 
         private void RegisterBroadcastReceiver()

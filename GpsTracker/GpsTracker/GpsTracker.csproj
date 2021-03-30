@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\BackgroundLocationService.cs" />
+    <Compile Include="Activities\CustomAdapter.cs" />
     <Compile Include="Activities\CustomBroadcastReceiver.cs" />
     <Compile Include="Activities\CustomNetworkCallback.cs" />
     <Compile Include="Activities\CustomPagerAdapter.cs" />
