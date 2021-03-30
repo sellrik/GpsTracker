@@ -17,14 +17,10 @@ namespace GpsTracker.Activities
     public class TrackingBroadcastReceiver : BroadcastReceiver
     {
         private Action<LocationChangedModel> locationChanged;
-        private Action trackingStarted;
-        private Action trackingStopped;
 
-        public TrackingBroadcastReceiver(Action<LocationChangedModel> locationChanged, Action trackingStarted, Action trackingStopped)
+        public TrackingBroadcastReceiver(Action<LocationChangedModel> locationChanged)
         {
             this.locationChanged = locationChanged;
-            this.trackingStarted = trackingStarted;
-            this.trackingStopped = trackingStopped;
         }
 
 
@@ -40,18 +36,6 @@ namespace GpsTracker.Activities
 
                         break;
                     }
-                case "TrackingStarted":
-                    {
-                        trackingStarted();
-                        break;
-                    }
-                case "TrackingStopped":
-                    {
-                        trackingStopped();
-                        break;
-
-                    }
-
                 default:
                     break;
             }

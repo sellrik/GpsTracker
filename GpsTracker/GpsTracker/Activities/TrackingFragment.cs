@@ -117,8 +117,7 @@ namespace GpsTracker.Activities
 
             StartService();
 
-            var intent = new Intent("TrackingStarted");
-            LocalBroadcastManager.SendBroadcast(intent);
+            TrackingStarted();
         }
 
         void StartService()
@@ -133,7 +132,6 @@ namespace GpsTracker.Activities
             {
                 Activity.StartService(intent);
             }
-
         }
 
         void StopService()
@@ -141,8 +139,7 @@ namespace GpsTracker.Activities
             var intent = new Intent(Context, typeof(BackgroundLocationService));
             Activity.StopService(intent);
 
-            var intent2 = new Intent("TrackingStopped");
-            LocalBroadcastManager.SendBroadcast(intent2);
+            TrackingStopped();
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
@@ -207,10 +204,8 @@ namespace GpsTracker.Activities
             {
                 var intentFilter = new IntentFilter();
                 intentFilter.AddAction("LocationChanged");
-                intentFilter.AddAction("TrackingStarted");
-                intentFilter.AddAction("TrackingStopped");
 
-                _trackingBroadcastReceiver = new TrackingBroadcastReceiver(LocationChanged, TrackingStarted, TrackingStopped);
+                _trackingBroadcastReceiver = new TrackingBroadcastReceiver(LocationChanged);
 
                 LocalBroadcastManager.RegisterReceiver(_trackingBroadcastReceiver, intentFilter);
             }
