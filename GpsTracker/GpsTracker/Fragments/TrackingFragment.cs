@@ -8,7 +8,10 @@ using Android.Views;
 using Android.Widget;
 using AndroidX.Core.App;
 using AndroidX.Fragment.App;
+using GpsTracker.Database.Entity;
 using GpsTracker.Models;
+using GpsTracker.Services;
+using Newtonsoft.Json;
 using System;
 using System.Globalization;
 
@@ -30,7 +33,6 @@ namespace GpsTracker.Activities
         private LocationChangedModel currentModel;
 
         private TrackingBroadcastReceiver _trackingBroadcastReceiver;
-
         private LocalBroadcastManager LocalBroadcastManager => LocalBroadcastManager.GetInstance(Context);
 
         private TextView textViewTrackingCoordinates;
@@ -39,11 +41,15 @@ namespace GpsTracker.Activities
         private TextView textViewTrackingStarted;
         private Button _startStopButton;
 
+        private TrackService _trackService;
+
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
             // Create your fragment here
+
+            _trackService = new TrackService();
         }
 
         public override void OnResume()
@@ -136,10 +142,12 @@ namespace GpsTracker.Activities
 
         void StopService()
         {
+            var stopTime = DateTime.UtcNow;
+
             var intent = new Intent(Context, typeof(BackgroundLocationService));
             Activity.StopService(intent);
 
-            TrackingStopped();
+            TrackingStopped(stopTime);
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
@@ -269,8 +277,26 @@ namespace GpsTracker.Activities
             textViewTrackingDistance.Text = string.Empty;
         }
 
-        private void TrackingStopped()
+        private void TrackingStopped(DateTime stopTime)
         {
+            if (distance > 0)
+            {
+                var trackEntity = new TrackEntity
+                {
+                    StartDate = startTime,
+                    EndDate = stopTime, // TODO: utc?
+                    Distance = distance
+                };
+
+                _trackService.Add(trackEntity);
+
+                var json = JsonConvert.SerializeObject(trackEntity);
+                var intent = new Intent("TrackingStopped");
+                intent.PutExtra("TrackEntity", json);
+
+                LocalBroadcastManager.SendBroadcast(intent);
+            }
+
             isStarted = false;
             startTime = default(DateTime);
             distance = 0;

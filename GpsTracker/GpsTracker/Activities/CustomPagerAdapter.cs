@@ -28,7 +28,7 @@ namespace GpsTracker.Activities
             logsFragment = new LogsFragment();
         }
 
-        public override int Count => 2;
+        public override int Count => 3;
 
         public override ICharSequence GetPageTitleFormatted(int position)
         {
@@ -38,11 +38,11 @@ namespace GpsTracker.Activities
                     {
                         return new Java.Lang.String("Track");
                     }
-                //case 1:
-                //    {
-                //        return new Java.Lang.String("Tracks");
-                //    }
                 case 1:
+                    {
+                        return new Java.Lang.String("Tracks");
+                    }
+                case 2:
                     {
                         return new Java.Lang.String("Logs");
                     }
@@ -59,16 +59,16 @@ namespace GpsTracker.Activities
                     {
                         return trackingFragment;
                     }
-                //case 1:
-                //    {
-                //        return tracksFragment;
-                //    }
                 case 1:
+                    {
+                        return tracksFragment;
+                    }
+                case 2:
                     {
                         return logsFragment;
                     }
                 default:
-                    throw new System.Exception("?");
+                    throw new System.Exception("Unsupported item!");
             }
 
         }

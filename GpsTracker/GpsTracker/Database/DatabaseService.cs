@@ -33,6 +33,7 @@ namespace GpsTracker.Database
             _connection.CreateTable<LocationEntity>();
             _connection.CreateTable<SettingEntity>();
             _connection.CreateTable<NetworkLogEntity>();
+            _connection.CreateTable<TrackEntity>();
         }
 
         public int Insert(object entity)

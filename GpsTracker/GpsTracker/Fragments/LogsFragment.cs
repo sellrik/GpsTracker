@@ -10,7 +10,6 @@ namespace GpsTracker.Activities
 {
     public class LogsFragment : Fragment
     {
-
         private ListView _listViewLog;
         private static List<string> _listViewData = new List<string>();
         private CustomAdapter _adapter;

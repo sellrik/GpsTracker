@@ -69,21 +69,24 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activities\BackgroundLocationService.cs" />
-    <Compile Include="Activities\CustomAdapter.cs" />
-    <Compile Include="Activities\CustomBroadcastReceiver.cs" />
-    <Compile Include="Activities\CustomNetworkCallback.cs" />
+    <Compile Include="Database\Entity\TrackEntity.cs" />
+    <Compile Include="Fragments\TracksBroadcastReceiver.cs" />
+    <Compile Include="Services\BackgroundLocationListener.cs" />
+    <Compile Include="Services\BackgroundLocationService.cs" />
+    <Compile Include="Fragments\CustomAdapter.cs" />
+    <Compile Include="Fragments\CustomBroadcastReceiver.cs" />
+    <Compile Include="Services\CustomNetworkCallback.cs" />
     <Compile Include="Activities\CustomPagerAdapter.cs" />
-    <Compile Include="Activities\LogsFragment.cs" />
-    <Compile Include="Activities\TrackingBroadcastReceiver.cs" />
-    <Compile Include="Activities\TracksFragment.cs" />
+    <Compile Include="Fragments\LogsFragment.cs" />
+    <Compile Include="Fragments\TrackingBroadcastReceiver.cs" />
+    <Compile Include="Fragments\TracksFragment.cs" />
     <Compile Include="Database\DatabaseService.cs" />
     <Compile Include="Database\Entity\LocationEntity.cs" />
     <Compile Include="Database\Entity\NetworkLogEntity.cs" />
     <Compile Include="Database\Entity\SettingEntity.cs" />
     <Compile Include="Database\Entity\SettingTypeEnum.cs" />
     <Compile Include="DependencyInjection.cs" />
-    <Compile Include="Activities\TrackingFragment.cs" />
+    <Compile Include="Fragments\TrackingFragment.cs" />
     <Compile Include="Models\LocationChangedModel.cs" />
     <Compile Include="Services\EmailClient.cs" />
     <Compile Include="Activities\ExportActivity.cs" />
@@ -102,7 +105,8 @@
     <Compile Include="Activities\SettingsActivity.cs" />
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\TelegramClient.cs" />
-    <Compile Include="Activities\UploaderWorker.cs" />
+    <Compile Include="Services\TrackService.cs" />
+    <Compile Include="Services\UploaderWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
