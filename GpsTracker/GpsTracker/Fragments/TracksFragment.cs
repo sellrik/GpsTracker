@@ -84,8 +84,9 @@ namespace GpsTracker.Activities
         private void LoadTracks()
         {
             var tracks = _trackService.Query()
+                .OrderByDescending(i => i.StartDate)
                 .Take(10)
-                .OrderBy(i => i.StartDate);
+                .OrderBy(i => i.StartDate); // Reverse order
 
             var data = new List<string>();
 

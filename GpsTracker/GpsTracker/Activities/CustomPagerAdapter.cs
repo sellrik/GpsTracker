@@ -15,62 +15,63 @@ using System.Text;
 
 namespace GpsTracker.Activities
 {
-    public class CustomPagerAdapter : FragmentStatePagerAdapter
+    public class CustomPagerAdapter : FragmentStateAdapter
     {
-        TrackingFragment trackingFragment;
-        TracksFragment tracksFragment;
-        LogsFragment logsFragment;
+        AndroidX.Fragment.App.Fragment[] items = new AndroidX.Fragment.App.Fragment[3];
 
-        public CustomPagerAdapter(AndroidX.Fragment.App.FragmentManager fm) : base(fm)
+        public CustomPagerAdapter(FragmentActivity fragmentActivity) : base(fragmentActivity)
         {
-            trackingFragment = new TrackingFragment();
-            tracksFragment = new TracksFragment();
-            logsFragment = new LogsFragment();
         }
 
-        public override int Count => 3;
-
-        public override ICharSequence GetPageTitleFormatted(int position)
+        public CustomPagerAdapter(AndroidX.Fragment.App.Fragment fragment) : base(fragment)
         {
-            switch (position)
+
+        }
+
+        public override int ItemCount => 3;
+
+        public override AndroidX.Fragment.App.Fragment CreateFragment(int p0)
+        {
+            switch (p0)
             {
                 case 0:
                     {
-                        return new Java.Lang.String("Track");
+                        if (items[0] == null)
+                        {
+                            items[0] = new TrackingFragment();
+                        }
+
+                        return items[0];
                     }
                 case 1:
                     {
-                        return new Java.Lang.String("Tracks");
+                        if (items[1] == null)
+                        {
+                            items[1] = new TracksFragment();
+                        }
+
+                        return items[1];
                     }
                 case 2:
                     {
-                        return new Java.Lang.String("Logs");
+                        if (items[2] == null)
+                        {
+                            items[2] = new LogsFragment();
+                        }
+
+                        return items[2];
                     }
                 default:
-                    return new Java.Lang.String();
+                    throw new System.Exception("Invalid fragment number!");
             }
         }
 
-        public override AndroidX.Fragment.App.Fragment GetItem(int position)
-        {
-            switch (position)
-            {
-                case 0:
-                    {
-                        return trackingFragment;
-                    }
-                case 1:
-                    {
-                        return tracksFragment;
-                    }
-                case 2:
-                    {
-                        return logsFragment;
-                    }
-                default:
-                    throw new System.Exception("Unsupported item!");
-            }
+        //public override long GetItemId(int position)
+        //{
+        //}
 
-        }
+        //public override bool ContainsItem(long itemId)
+        //{
+        //}
     }
 }

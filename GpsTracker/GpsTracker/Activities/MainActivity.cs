@@ -15,8 +15,10 @@ using AndroidX.Core.App;
 using AndroidX.Core.Content;
 using AndroidX.LocalBroadcastManager.Content;
 using AndroidX.ViewPager.Widget;
+using AndroidX.ViewPager2.Widget;
 using Google.Android.Material.Tabs;
 using GpsTracker.Activities;
+using static Google.Android.Material.Tabs.TabLayoutMediator;
 
 namespace GpsTracker
 {
@@ -33,16 +35,18 @@ namespace GpsTracker
 
             DependencyInjection.Setup();
 
-            var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);       
+            var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);
             SupportActionBar.Title = "GPS tracker";
 
-            var tabLayout = FindViewById<TabLayout>(Resource.Id.tabLayout);
-            var viewPager = FindViewById<ViewPager>(Resource.Id.viewPager1);
+            var viewPager = FindViewById<ViewPager2>(Resource.Id.viewPager1);
+            var pagerAdapter = new CustomPagerAdapter(this);
             viewPager.OffscreenPageLimit = 3;
-            viewPager.Adapter = new CustomPagerAdapter(SupportFragmentManager);
+            viewPager.Adapter = pagerAdapter;
 
-            tabLayout.SetupWithViewPager(viewPager);
+            var tabLayout = FindViewById<TabLayout>(Resource.Id.tabLayout);
+            var tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, new TabConfigurationStrategy());
+            tabLayoutMediator.Attach();
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
@@ -59,7 +63,7 @@ namespace GpsTracker
                 StartActivity(intent);
                 return true;
             }
-            else if(item.ItemId == Resource.Id.menu_settings)
+            else if (item.ItemId == Resource.Id.menu_settings)
             {
                 var intent = new Intent(this, typeof(SettingsActivity));
                 StartActivity(intent);
@@ -92,6 +96,34 @@ namespace GpsTracker
         protected override void OnDestroy()
         {
             base.OnDestroy();
+        }
+
+        private class TabConfigurationStrategy : Java.Lang.Object, ITabConfigurationStrategy
+        {
+            public void OnConfigureTab(TabLayout.Tab p0, int p1)
+            {
+                switch (p1)
+                {
+                    case 0:
+                        {
+                            p0.SetText("Track");
+                            break;
+                        }
+                    case 1:
+                        {
+                            p0.SetText("Tracks");
+                            break;
+                        }
+                    case 2:
+                        {
+                            p0.SetText("Logs");
+                            break;
+                        }
+                    default:
+                        p0.SetText("");
+                        break;
+                }
+            }
         }
     }
 }

@@ -25,7 +25,7 @@
              android:id="@+id/tabLayout"
             android:layout_below="@+id/buttonStartStop"/>
 		    
-		<androidx.viewpager.widget.ViewPager
+		<androidx.viewpager2.widget.ViewPager2
             android:minWidth="25px"
             android:minHeight="25px"
             android:layout_width="match_parent"
