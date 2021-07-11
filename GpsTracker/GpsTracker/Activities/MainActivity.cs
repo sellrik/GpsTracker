@@ -7,14 +7,9 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
-using Android.Runtime;
 using Android.Views;
-using Android.Widget;
 using AndroidX.AppCompat.App;
-using AndroidX.Core.App;
-using AndroidX.Core.Content;
 using AndroidX.LocalBroadcastManager.Content;
-using AndroidX.ViewPager.Widget;
 using AndroidX.ViewPager2.Widget;
 using Google.Android.Material.Tabs;
 using GpsTracker.Activities;
@@ -32,8 +27,6 @@ namespace GpsTracker
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
-
-            DependencyInjection.Setup();
 
             var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
             SetSupportActionBar(toolbar);

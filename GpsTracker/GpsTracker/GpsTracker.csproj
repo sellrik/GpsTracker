@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Database\Entity\TrackEntity.cs" />
+    <Compile Include="DependencyInjection.cs" />
     <Compile Include="Fragments\TracksBroadcastReceiver.cs" />
     <Compile Include="Services\BackgroundLocationListener.cs" />
     <Compile Include="Services\BackgroundLocationService.cs" />
@@ -85,7 +86,6 @@
     <Compile Include="Database\Entity\NetworkLogEntity.cs" />
     <Compile Include="Database\Entity\SettingEntity.cs" />
     <Compile Include="Database\Entity\SettingTypeEnum.cs" />
-    <Compile Include="DependencyInjection.cs" />
     <Compile Include="Fragments\TrackingFragment.cs" />
     <Compile Include="Models\LocationChangedModel.cs" />
     <Compile Include="Services\EmailClient.cs" />
